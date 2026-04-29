@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jona Setiawan - Desktop Portfolio</title>
+  <meta name="description" content="Desktop-style portfolio of Jona Setiawan, multimedia designer and creative designer." />
+  <link rel="icon" type="image/png" href="project/assets/logo-preview/logo-lemon.png" />
+  <link rel="stylesheet" href="desktop-layout.css" />
+</head>
+<body>
+  <div class="desktop" aria-label="Jona Setiawan desktop portfolio">
+    <div class="wallpaper" aria-hidden="true">
+      <div class="mountain mountain-one"></div>
+      <div class="mountain mountain-two"></div>
+      <div class="mountain mountain-three"></div>
+      <div class="window-mark">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <header class="menu-bar">
+      <button class="start-mark" type="button" data-window-target="about" aria-label="Open About window">
+        <span></span><span></span><span></span><span></span>
+      </button>
+      <nav class="menu-links" aria-label="Desktop navigation">
+        <button type="button" data-window-target="about">About</button>
+        <button type="button" data-window-target="projects">Project</button>
+        <button type="button" data-window-target="skills">Skill tree</button>
+        <button type="button" data-window-target="experience">Experience</button>
+        <button type="button" data-window-target="achievement">Achievement</button>
+        <a href="changelog.html" data-browser-tab="Changelog">Changelog</a>
+        <button type="button" data-window-target="guestbook">Guestbook</button>
+      </nav>
+      <div class="menu-status">
+        <span>Jona OS</span>
+        <time id="desktop-clock" datetime="">--:--</time>
+      </div>
+    </header>
+
+    <main class="desktop-stage">
+      <section class="desktop-window is-open is-focused" id="window-about" data-window="about" aria-labelledby="about-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize About"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close About"></button>
+          </div>
+          <p>About.exe</p>
+        </div>
+        <div class="window-content about-layout">
+          <div class="profile-wrap">
+            <div class="profile-panel">
+              <img src="https://i.pinimg.com/736x/51/6b/3d/516b3dfcab87be8bbf46c9ed05184eeb.jpg" alt="Jona Setiawan profile" />
+            </div>
+            <span>Available for creative design work</span>
+          </div>
+          <div>
+            <p class="eyebrow">Multimedia Designer</p>
+            <h1 id="about-title">Jona Setiawan</h1>
+            <p class="lead">I build visual identities, GFX edits, product mockups, photography archives, and web layouts with a strong focus on presentation, detail, and visual storytelling.</p>
+            <div class="quick-actions">
+              <button type="button" data-window-target="projects">Open Projects</button>
+              <button type="button" data-window-target="achievement">View Achievements</button>
+              <a href="mailto:jonasaevuddyinsetiawan@gmail.com">Contact</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="desktop-window window-projects" id="window-projects" data-window="projects" aria-labelledby="projects-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Projects"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Projects"></button>
+          </div>
+          <p>Project Finder</p>
+        </div>
+        <div class="window-content project-showcase">
+          <div class="window-heading project-heading">
+            <div>
+              <h2 id="projects-title">Explore My Diverse Design Portfolio</h2>
+              <p>Browse selected visual identity, photography, campaign, and GFX projects inside the desktop browser.</p>
+            </div>
+          </div>
+          <div class="project-grid project-grid-archive">
+            <a class="project-card project-card-featured" href="project/pages/personal-gfx-design-collection.html" data-browser-tab="GFX">
+              <img src="project/assets/preview-professional-gfx-design-suite.jpg" alt="Personal GFX design collection preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Personal GFX Design Collection</h3><span class="status status-growing">On-going</span></div>
+                <p>An ongoing personal GFX project featuring character edits, poster compositions, layered effects, and typography experiments built from my latest design work.</p>
+                <div class="project-tags"><span>Adobe Photoshop</span><span>Adobe Illustrator</span><span>Photo Manipulation</span><span>Typography</span></div>
+                <div class="project-meta"><span>Still Going</span><span>Personal Project</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/ikm-design-creative-project.html" data-browser-tab="IKM Design">
+              <img src="project/assets/logo-preview/internusa-kreasindo-mandiri.jpg" alt="IKM design creative project preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>IKM Design Creative Project</h3><span class="status status-growing">On-going</span></div>
+                <p>The main job work project focused on IKM design tasks and creative production for brand and bag-related visual needs.</p>
+                <div class="project-tags"><span>Adobe Photoshop</span><span>Adobe Illustrator</span><span>Canva</span></div>
+                <div class="project-meta"><span>Agustus 2025</span><span>Main work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/marketing-assistant-hr.html" data-browser-tab="Marketing Assistant HR">
+              <img src="project/assets/logo-preview/fortress-logo.jpg" alt="Marketing Assistant HR preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Marketing & Assistant HR</h3><span class="status status-completed">Completed</span></div>
+                <p>Training / PKL project at Fortress focused on marketing support, social media and advertisement tasks, plus assistant HR administration organized through an Excel-based workflow.</p>
+                <div class="project-tags"><span>Excel</span><span>Marketing Social Media</span><span>Advertisement</span><span>Assistant HR</span></div>
+                <div class="project-meta"><span>September 2022 - November 2022</span><span>Training / PKL</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/event-poster-campaign.html" data-browser-tab="Event Poster">
+              <img src="project/assets/kota-tua/poster.jpg" alt="Event poster campaign preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Event Poster Campaign</h3><span class="status status-completed">Completed</span></div>
+                <p>Eye-catching poster designs for events and campaigns featuring bold typography, vibrant colors, and compelling visual hierarchy.</p>
+                <div class="project-tags"><span>Adobe Photoshop</span><span>Adobe Illustrator</span><span>Typography</span><span>Print Design</span></div>
+                <div class="project-meta"><span>September 2024</span><span>Client Work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/photography.html" data-browser-tab="Photography">
+              <img src="project/assets/kota-tua/cosplayer-1.jpg" alt="Photography archive preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Photography Archive</h3><span class="status status-growing">Growing</span></div>
+                <p>A living archive of client photography projects, organized by year with cover highlights and gallery previews for each shoot.</p>
+                <div class="project-tags"><span>Event Coverage</span><span>Portraits</span><span>Storytelling</span></div>
+                <div class="project-meta"><span>November 2025</span><span>Client Work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/lariso-brand-identity.html" data-browser-tab="Lariso">
+              <img src="project/assets/lariso-project/Lariso logo circle.png" alt="Lariso brand identity preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Lariso Brand Identity</h3><span class="status status-completed">Completed</span></div>
+                <p>A story-driven snack brand identity project built from logo construction to pouch packaging iteration, final mockup presentation, and branded invoice collateral.</p>
+                <div class="project-tags"><span>Adobe Illustrator</span><span>Adobe Photoshop</span></div>
+                <div class="project-meta"><span>4 January 2026</span><span>Client Work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/honkai-star-rail-e-money-transit-series.html" data-browser-tab="HSR E-Money">
+              <img src="project/assets/E-Money card Design Honkai star rail/Preview belakang E-money HSR.jpg" alt="Honkai Star Rail e-money preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Honkai: Star Rail E-Money Transit Series</h3><span class="status status-completed">Completed</span></div>
+                <p>A custom public transit card series that translates Honkai: Star Rail character energy into collectible everyday merchandise with print-ready production thinking.</p>
+                <div class="project-tags"><span>Adobe Illustrator</span><span>Adobe Photoshop</span></div>
+                <div class="project-meta"><span>2 February 2026</span><span>Client Work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+            <a class="project-card" href="project/pages/documentary-kota-tua-ukk.html" data-browser-tab="Documentary Kota Tua">
+              <img src="project/assets/logo-preview/yuppentek-logo-kota-tua-version-banner.jpg" alt="Documentary Kota Tua UKK preview" />
+              <div class="project-card-body">
+                <div class="project-title-row"><h3>Documentary Kota Tua UKK</h3><span class="status status-progress">In Progress</span></div>
+                <p>School project documentation created in Kota Tua for a UKK assignment, focused on promoting the area through visual storytelling, editing, and supporting design assets.</p>
+                <div class="project-tags"><span>Adobe Premiere Pro</span><span>School Project</span><span>Photoshop</span><span>Documentary</span></div>
+                <div class="project-meta"><span>UKK Project</span><span>School Work</span></div>
+                <strong>View Full Project -></strong>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="desktop-window window-skills" id="window-skills" data-window="skills" aria-labelledby="skills-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Skill tree"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Skill tree"></button>
+          </div>
+          <p>Skill Tree</p>
+        </div>
+        <div class="window-content">
+          <div class="window-heading">
+            <p class="eyebrow">Creative System</p>
+            <h2 id="skills-title">Skill tree</h2>
+          </div>
+          <div class="skill-map">
+            <article><strong>Branding</strong><span>Logo design, identity systems, color direction</span></article>
+            <article><strong>GFX Design</strong><span>Photoshop compositing, character edits, social visuals</span></article>
+            <article><strong>UI / Web</strong><span>HTML, CSS, responsive layouts, portfolio systems</span></article>
+            <article><strong>Photography</strong><span>Event coverage, documentary framing, archive curation</span></article>
+            <article><strong>Motion</strong><span>Premiere Pro, After Effects, story edits</span></article>
+            <article><strong>Production</strong><span>Mockups, print-ready visuals, marketing assets</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="desktop-window window-experience" id="window-experience" data-window="experience" aria-labelledby="experience-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Experience"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Experience"></button>
+          </div>
+          <p>Experience.log</p>
+        </div>
+        <div class="window-content">
+          <div class="window-heading">
+            <p class="eyebrow">Timeline</p>
+            <h2 id="experience-title">Experience</h2>
+          </div>
+          <ol class="timeline experience-cards">
+            <li>
+              <img src="project/assets/ikm-project/2026/March/s26 totebag.jpeg" alt="IKM creative design preview" />
+              <time>2025 Aug - Present</time>
+              <strong>Design Creative - PT Internusa Kreasindo Mandiri</strong>
+              <span>Producing social media visuals, product mockups, company presentation graphics, marketing layouts, and branded design assets from concept to delivery.</span>
+            </li>
+            <li>
+              <img src="project/assets/kota-tua/cosplayer-1.jpg" alt="Freelance photography preview" />
+              <time>2023 - Present</time>
+              <strong>Freelance Graphic Designer & Photographer</strong>
+              <span>Handling poster design, banners, GFX visuals, event documentation, portrait sessions, and curated web project pages for personal and client-facing archives.</span>
+            </li>
+            <li>
+              <img src="project/assets/certification-files/certification-trainee/aryaduta-trainee-website-certification.jpg" alt="Hotel trainee certificate preview" />
+              <time>Jul - Oct 2024</time>
+              <strong>Sport Desk Staff - Hotel Aryaduta Country Club</strong>
+              <span>Supported guest service, day-to-day reporting, sport facility operations, and promotion support while building stronger communication and service workflow habits.</span>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="desktop-window window-achievement" id="window-achievement" data-window="achievement" aria-labelledby="achievement-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Achievement"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Achievement"></button>
+          </div>
+          <p>Achievement Vault</p>
+        </div>
+        <div class="window-content achievement-layout">
+          <div>
+            <p class="eyebrow">Certificates</p>
+            <h2 id="achievement-title">Achievement</h2>
+            <p class="lead">MySkill certificates, TOEFL training files, trainee records, and competition awards are collected in a dedicated archive.</p>
+          </div>
+          <a class="big-link" href="certification.html" data-browser-tab="Certification">Open Certification Archive</a>
+        </div>
+      </section>
+
+      <section class="desktop-window browser-window" id="window-browser" data-window="browser" aria-labelledby="browser-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Browser"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Browser"></button>
+          </div>
+          <p id="browser-title">Portfolio Browser</p>
+        </div>
+        <div class="browser-shell">
+          <div class="browser-tabbar" id="browser-tabbar" role="tablist" aria-label="Open page tabs"></div>
+          <div class="browser-addressbar">
+            <span class="browser-lock" aria-hidden="true"></span>
+            <input id="browser-address" class="browser-address-input" type="text" value="Open a portfolio page" aria-label="Browser address or search" />
+          </div>
+          <iframe class="browser-frame" id="browser-frame" title="Portfolio page preview"></iframe>
+        </div>
+      </section>
+
+      <section class="desktop-window window-guestbook" id="window-guestbook" data-window="guestbook" aria-labelledby="guestbook-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Guestbook"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Guestbook"></button>
+          </div>
+          <p>Guestbook.txt</p>
+        </div>
+        <div class="window-content guestbook-layout">
+          <div>
+            <p class="eyebrow">Visitor Notes</p>
+            <h2 id="guestbook-title">Guestbook</h2>
+            <p class="lead">Leave a small note for the portfolio. Messages stay in this browser using local storage, so the page feels alive without needing a server.</p>
+          </div>
+          <form class="guestbook-form" id="guestbook-form">
+            <input id="guestbook-name" type="text" placeholder="Name" aria-label="Name" required />
+            <textarea id="guestbook-message" placeholder="Message" aria-label="Message" required></textarea>
+            <button type="submit">Add note</button>
+          </form>
+          <div class="guestbook-notes" id="guestbook-notes" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="desktop-icons" aria-label="Desktop shortcuts">
+      <button type="button" data-window-target="about"><span class="icon-folder"></span>About</button>
+      <button type="button" data-window-target="projects"><span class="icon-folder"></span>Project</button>
+      <button type="button" data-window-target="skills"><span class="icon-folder"></span>Skills</button>
+      <a href="https://www.instagram.com/jona.mmzv/" data-browser-tab="Instagram"><span class="social-logo social-instagram">IG</span>Instagram</a>
+      <a href="https://www.linkedin.com/in/jona-setiawan-099149311/" data-browser-tab="LinkedIn"><span class="social-logo social-linkedin">in</span>LinkedIn</a>
+      <a href="https://github.com/LanderLynch" data-browser-tab="GitHub"><span class="social-logo social-github">GH</span>GitHub</a>
+      <a href="https://x.com/CandyLordberry" data-browser-tab="X"><span class="social-logo social-x">X</span>X</a>
+    </aside>
+
+    <footer class="dock" aria-label="Application dock">
+      <button class="dock-item dock-start" type="button" data-window-target="about" aria-label="Open About">
+        <span></span><span></span><span></span><span></span>
+      </button>
+      <span class="dock-separator" aria-hidden="true"></span>
+      <div class="taskbar-recents" id="taskbar-recents" aria-label="Recently opened windows"></div>
+      <span class="dock-spacer" aria-hidden="true"></span>
+      <a class="dock-item app-file" href="certification.html" data-browser-tab="Certification" aria-label="Open Certification">PDF</a>
+    </footer>
+  </div>
+
+  <script src="desktop-layout.js"></script>
+</body>
+</html>

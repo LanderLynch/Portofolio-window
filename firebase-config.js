@@ -1,0 +1,32 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS-gB4Aaqf7i__k0F8aINMOPyhBJtX6YQ",
+  authDomain: "portofolio-jsfolio.firebaseapp.com",
+  databaseURL: "https://portofolio-jsfolio-default-rtdb.firebaseio.com",
+  projectId: "portofolio-jsfolio",
+  storageBucket: "portofolio-jsfolio.firebasestorage.app",
+  messagingSenderId: "992494176616",
+  appId: "1:992494176616:web:0722afe576666a6cfeeedd",
+  measurementId: "G-KTNWXQNVLF"
+};
+
+// This is the public Firebase web app config for browser use.
+// Do not place service account keys or admin credentials in this file.
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const analytics = null;
+
+// Expose Firebase instances for the existing non-module scripts on the page.
+window.firebaseApp = app;
+window.firebaseAnalytics = analytics;
+window.firebaseAuth = auth;
+window.db = db;
+window.firebaseStorage = storage;
+
+export { app, analytics, auth, db, storage };
