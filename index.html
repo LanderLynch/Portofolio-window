@@ -25,8 +25,8 @@
       </button>
       <nav class="menu-links" aria-label="Desktop navigation">
         <button type="button" data-window-target="about">About</button>
-        <button type="button" data-window-target="projects">Project</button>
-        <button type="button" data-window-target="skills">Skill tree</button>
+        <button type="button" data-window-target="projects" data-explorer-context="projects">Project</button>
+        <button type="button" data-window-target="skills" data-explorer-context="skills">Skill tree</button>
         <button type="button" data-window-target="experience">Experience</button>
         <button type="button" data-window-target="achievement">Achievement</button>
         <a href="changelog.html" data-browser-tab="Changelog">Changelog</a>
@@ -123,7 +123,7 @@
                 <strong>View Full Project -></strong>
               </div>
             </a>
-            <a class="project-card" href="project/pages/photography.html" data-browser-tab="Photography">
+            <a class="project-card" href="project/pages/photography.html" data-browser-tab="Photography" data-explorer-context="photography">
               <img src="project/assets/kota-tua/cosplayer-1.jpg" alt="Photography archive preview" />
               <div class="project-card-body">
                 <div class="project-title-row"><h3>Photography Archive</h3><span class="status status-growing">Growing</span></div>
@@ -241,7 +241,78 @@
             <h2 id="achievement-title">Achievement</h2>
             <p class="lead">MySkill certificates, TOEFL training files, trainee records, and competition awards are collected in a dedicated archive.</p>
           </div>
-          <a class="big-link" href="certification.html" data-browser-tab="Certification">Open Certification Archive</a>
+          <button class="big-link" type="button" data-window-target="certifications" data-explorer-context="certifications">Open Certification Archive</button>
+        </div>
+      </section>
+
+      <section class="desktop-window explorer-window" id="window-certifications" data-window="certifications" aria-labelledby="certifications-title">
+        <div class="window-titlebar">
+          <div class="traffic-lights">
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Certifications"></button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Certifications"></button>
+          </div>
+          <p id="certifications-title">Certifications</p>
+        </div>
+        <div class="explorer-shell">
+          <div class="explorer-tabs">
+            <span class="explorer-tab is-active">Certifications</span>
+            <span class="explorer-new-tab">+</span>
+          </div>
+          <div class="explorer-address-row">
+            <div class="explorer-nav-buttons" aria-label="Folder navigation controls">
+              <button type="button" aria-label="Back">‹</button>
+              <button type="button" aria-label="Forward">›</button>
+              <button type="button" aria-label="Up">⌃</button>
+              <button type="button" aria-label="Refresh">↻</button>
+            </div>
+            <div class="explorer-addressbar" aria-label="Current folder path">
+              <span>This PC</span>
+              <span>Documents</span>
+              <strong id="explorer-breadcrumb-current">Certifications</strong>
+            </div>
+            <label class="explorer-search">
+              <input id="explorer-search-input" type="search" aria-label="Search current folder" placeholder="Search Certifications" />
+            </label>
+          </div>
+          <div class="explorer-ribbon" aria-label="File Explorer toolbar">
+            <button type="button"><span>＋</span>New</button>
+            <button type="button"><span>✂</span>Cut</button>
+            <button type="button"><span>⧉</span>Copy</button>
+            <button type="button"><span>▣</span>Paste</button>
+            <button type="button"><span>A</span>Rename</button>
+            <button type="button"><span>⌫</span>Delete</button>
+            <button type="button"><span>↗</span>Share</button>
+            <button type="button"><span>↕</span>Sort</button>
+            <button type="button"><span>▤</span>View</button>
+            <button type="button" aria-label="More options"><span>...</span></button>
+            <span class="explorer-preview-toggle">Preview</span>
+          </div>
+          <div class="explorer-body">
+            <aside class="explorer-sidebar" id="explorer-sidebar">
+              <div class="explorer-sidebar-section">
+                <span class="explorer-sidebar-title">Home</span>
+                <button type="button" data-sidebar-root="projects">Projects</button>
+                <button type="button" data-sidebar-root="skills">Skills</button>
+                <button class="is-active" type="button" data-sidebar-root="certifications">Certifications</button>
+                <button type="button" data-sidebar-root="photography">Photography</button>
+              </div>
+            </aside>
+            <div class="explorer-files" id="explorer-files" aria-label="Current folder items">
+            </div>
+            <aside class="explorer-preview" id="explorer-preview" aria-live="polite">
+              <div class="explorer-preview-empty">
+                <span class="explorer-preview-empty-icon"></span>
+                <p>Select a folder to preview.</p>
+              </div>
+            </aside>
+          </div>
+          <div class="explorer-statusbar">
+            <span id="explorer-status-count">4 items</span>
+            <div class="explorer-view-switcher" aria-label="Explorer view controls">
+              <button type="button" aria-label="Details view">☰</button>
+              <button type="button" aria-label="Icons view">▦</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -289,8 +360,9 @@
 
     <aside class="desktop-icons" aria-label="Desktop shortcuts">
       <button type="button" data-window-target="about"><span class="icon-folder"></span>About</button>
-      <button type="button" data-window-target="projects"><span class="icon-folder"></span>Project</button>
-      <button type="button" data-window-target="skills"><span class="icon-folder"></span>Skills</button>
+      <button type="button" data-window-target="projects" data-explorer-context="projects"><span class="icon-folder"></span>Project</button>
+      <button type="button" data-window-target="skills" data-explorer-context="skills"><span class="icon-folder"></span>Skills</button>
+      <button type="button" data-window-target="certifications" data-explorer-context="certifications"><span class="icon-folder"></span>Certification</button>
       <a href="https://www.instagram.com/jona.mmzv/" data-browser-tab="Instagram"><span class="social-logo social-instagram">IG</span>Instagram</a>
       <a href="https://www.linkedin.com/in/jona-setiawan-099149311/" data-browser-tab="LinkedIn"><span class="social-logo social-linkedin">in</span>LinkedIn</a>
       <a href="https://github.com/LanderLynch" data-browser-tab="GitHub"><span class="social-logo social-github">GH</span>GitHub</a>
@@ -298,14 +370,20 @@
     </aside>
 
     <footer class="dock" aria-label="Application dock">
-      <button class="dock-item dock-start" type="button" data-window-target="about" aria-label="Open About">
-        <span></span><span></span><span></span><span></span>
+      <button class="dock-item dock-start" type="button" data-window-target="about" aria-label="Open Start">
+        <svg class="windows-11-logo" viewBox="0 0 88 88" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M0 0h41.8v41.8H0V0Zm46.2 0H88v41.8H46.2V0ZM0 46.2h41.8V88H0V46.2Zm46.2 0H88V88H46.2V46.2Z"></path>
+        </svg>
       </button>
       <span class="dock-separator" aria-hidden="true"></span>
       <div class="taskbar-recents" id="taskbar-recents" aria-label="Recently opened windows"></div>
       <span class="dock-spacer" aria-hidden="true"></span>
-      <a class="dock-item app-file" href="certification.html" data-browser-tab="Certification" aria-label="Open Certification">PDF</a>
+      <button class="dock-item app-file" type="button" data-window-target="certifications" data-explorer-context="certifications" aria-label="Open Certification">PDF</button>
     </footer>
+
+    <div class="desktop-furina" id="desktop-furina" aria-hidden="true">
+      <img src="webmeji-main/Furina/shime1.png" alt="" />
+    </div>
   </div>
 
   <script src="desktop-layout.js"></script>

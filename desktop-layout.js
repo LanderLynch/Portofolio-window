@@ -10,10 +10,215 @@
     skills: "Skill tree",
     experience: "Experience",
     achievement: "Achievement",
+    certifications: "Certifications",
     browser: "Browser",
     guestbook: "Guestbook"
   };
   const browserInstances = new Map();
+  const portfolioData = {
+    projects: {
+      label: "Projects",
+      folders: [
+        {
+          key: "personal-gfx",
+          label: "Personal GFX",
+          logo: "GFX",
+          organization: "Jona Setiawan",
+          title: "Personal GFX Design Collection",
+          status: "On-going",
+          description: "An ongoing personal GFX project featuring character edits, poster compositions, layered effects, and typography experiments built from recent design work.",
+          tools: ["Photoshop", "Illustrator", "Photo Manipulation", "Typography"],
+          date: "Still Going",
+          type: "Personal Project",
+          href: "project/pages/personal-gfx-design-collection.html"
+        },
+        {
+          key: "ikm",
+          label: "IKM Design",
+          logo: "IKM",
+          organization: "PT Internusa Kreasindo Mandiri",
+          title: "IKM Design Creative Project",
+          status: "On-going",
+          description: "Main job work focused on IKM design tasks and creative production for brand and bag-related visual needs.",
+          tools: ["Photoshop", "Illustrator", "Canva"],
+          date: "Agustus 2025",
+          type: "Main Work",
+          href: "project/pages/ikm-design-creative-project.html"
+        },
+        {
+          key: "marketing-hr",
+          label: "Marketing HR",
+          logo: "HR",
+          organization: "Fortress",
+          title: "Marketing & Assistant HR",
+          status: "Completed",
+          description: "Training and PKL project focused on marketing support, social media tasks, advertisement records, and assistant HR administration.",
+          tools: ["Excel", "Marketing", "Advertisement", "Assistant HR"],
+          date: "Sep - Nov 2022",
+          type: "Training / PKL",
+          href: "project/pages/marketing-assistant-hr.html"
+        },
+        {
+          key: "lariso",
+          label: "Lariso",
+          logo: "LA",
+          organization: "Lariso",
+          title: "Lariso Brand Identity",
+          status: "Completed",
+          description: "A snack brand identity project built from logo construction to pouch packaging iteration, final mockup presentation, and branded invoice collateral.",
+          tools: ["Illustrator", "Photoshop", "Brand Identity"],
+          date: "4 January 2026",
+          type: "Client Work",
+          href: "project/pages/lariso-brand-identity.html"
+        }
+      ]
+    },
+    skills: {
+      label: "Skills",
+      folders: [
+        {
+          key: "branding",
+          label: "Branding",
+          logo: "BR",
+          organization: "Creative System",
+          title: "Branding Skill Tree",
+          status: "Active",
+          description: "Logo design, visual identity systems, brand color direction, and presentation-ready identity rules.",
+          tools: ["Logo", "Identity", "Color", "Guidelines"],
+          date: "Current",
+          type: "Skill Area",
+          href: ""
+        },
+        {
+          key: "gfx-skill",
+          label: "GFX Design",
+          logo: "GX",
+          organization: "Creative System",
+          title: "GFX Design Skill Tree",
+          status: "Active",
+          description: "Photoshop compositing, poster-style layouts, character framing, typography, and dramatic visual effects.",
+          tools: ["Photoshop", "Compositing", "Poster", "Effects"],
+          date: "Current",
+          type: "Skill Area",
+          href: ""
+        },
+        {
+          key: "ui-web",
+          label: "UI / Web",
+          logo: "UI",
+          organization: "Creative System",
+          title: "UI and Web Layout",
+          status: "Active",
+          description: "HTML, CSS, responsive layouts, interactive desktop metaphors, and portfolio page systems.",
+          tools: ["HTML", "CSS", "JavaScript", "Responsive"],
+          date: "Current",
+          type: "Skill Area",
+          href: ""
+        }
+      ]
+    },
+    certifications: {
+      label: "Certifications",
+      folders: [
+        {
+          key: "myskill",
+          label: "MySkill",
+          logo: "MS",
+          organization: "MySkill",
+          title: "MySkill Certificate Collection",
+          status: "On-going",
+          description: "A growing certification archive covering graphic design, brand identity, UX research, content marketing, color systems, typography, and web development foundations.",
+          tools: ["Graphic Design", "Brand Identity", "UX Research", "Typography"],
+          date: "2025 - Present",
+          type: "Certification Archive",
+          href: "certification.html"
+        },
+        {
+          key: "toefl",
+          label: "TOEFL Training",
+          logo: "TF",
+          organization: "TOEFL Training",
+          title: "TOEFL ITP Learning Archive",
+          status: "Completed",
+          description: "Listening, reading, written structure, vocabulary, and TOEFL ITP preparation materials organized as PDF study records.",
+          tools: ["Listening", "Reading", "Structure", "Vocabulary"],
+          date: "Training Files",
+          type: "PDF Archive",
+          href: "certification.html"
+        },
+        {
+          key: "trainee",
+          label: "Trainee",
+          logo: "AR",
+          organization: "Aryaduta Country Club",
+          title: "Trainee Performance Records",
+          status: "Completed",
+          description: "Aryaduta trainee documents including website certification and performance scoring records from the Sport Desk work period.",
+          tools: ["Guest Service", "Reporting", "Operations", "Promotion"],
+          date: "Jul - Oct 2024",
+          type: "Trainee Record",
+          href: "certification.html"
+        },
+        {
+          key: "competition",
+          label: "Competition",
+          logo: "KT",
+          organization: "Kota Tangerang",
+          title: "Competition Award Archive",
+          status: "Completed",
+          description: "Award documentation from the Kota Tangerang competition archive, grouped with achievement records for easy review inside the portfolio.",
+          tools: ["Competition", "Award", "Achievement", "Documentation"],
+          date: "February 2024",
+          type: "Achievement",
+          href: "certification.html"
+        }
+      ]
+    },
+    photography: {
+      label: "Photography",
+      folders: [
+        {
+          key: "photo-archive",
+          label: "Photography Archive",
+          logo: "PH",
+          organization: "Photography",
+          title: "Photography Archive",
+          status: "Growing",
+          description: "A living archive of client photography projects, organized by year with cover highlights and gallery previews.",
+          tools: ["Event Coverage", "Portraits", "Storytelling"],
+          date: "November 2025",
+          type: "Client Work",
+          href: "project/pages/photography.html"
+        },
+        {
+          key: "event-coverage",
+          label: "Event Coverage",
+          logo: "EV",
+          organization: "Photography",
+          title: "Event Coverage",
+          status: "Growing",
+          description: "Event documentation with candid moments, atmosphere, venue details, and story-focused coverage.",
+          tools: ["Events", "Candid", "Coverage"],
+          date: "Ongoing",
+          type: "Photo Category",
+          href: "project/pages/photography.html"
+        },
+        {
+          key: "documentary",
+          label: "Documentary",
+          logo: "DC",
+          organization: "Photography",
+          title: "Documentary Kota Tua",
+          status: "In Progress",
+          description: "School project documentation created in Kota Tua for a UKK assignment, focused on visual storytelling and editing.",
+          tools: ["Premiere Pro", "Photoshop", "Documentary"],
+          date: "UKK Project",
+          type: "School Work",
+          href: "project/pages/documentary-kota-tua-ukk.html"
+        }
+      ]
+    }
+  };
   let topZ = 100;
   let activeDrag = null;
   let activeResize = null;
@@ -78,10 +283,32 @@
       return;
     }
 
+    stabilizeWindowFrame(windowElement);
     windowElement.classList.remove("is-closing");
     windowElement.classList.add("is-open");
     focusWindow(windowElement);
     addRecentWindow(name);
+  }
+
+  function stabilizeWindowFrame(windowElement) {
+    if (!windowElement || windowElement.dataset.frameReady === "true") {
+      return;
+    }
+
+    const bounds = getViewportBounds();
+    const rect = windowElement.getBoundingClientRect();
+    const scale = getDesktopScale();
+    const computed = getComputedStyle(windowElement);
+    const minHeight = Number.parseFloat(computed.minHeight) || 240;
+    const cssHeight = Number.parseFloat(computed.height);
+    const currentHeight = cssHeight || rect.height / scale;
+    const fallbackHeight = Math.min(Math.max(currentHeight || 0, minHeight), Math.max(320, bounds.height - 150));
+
+    if (!windowElement.style.height) {
+      windowElement.style.height = `${fallbackHeight}px`;
+    }
+
+    windowElement.dataset.frameReady = "true";
   }
 
   function closeWindow(windowElement) {
@@ -751,6 +978,10 @@
     windowElement.addEventListener("pointerup", endWindowDrag);
     windowElement.addEventListener("pointercancel", endWindowDrag);
 
+    if (windowElement.classList.contains("is-open")) {
+      stabilizeWindowFrame(windowElement);
+    }
+
     windowElement.querySelector("[data-window-close]")?.addEventListener("click", () => {
       closeWindow(windowElement);
     });
@@ -878,6 +1109,336 @@
     renderNotes();
   }
 
+  function setupExplorerWindow() {
+    const preview = document.getElementById("explorer-preview");
+    let activeInfo = null;
+
+    if (!preview) {
+      return;
+    }
+
+    function normalizeExplorerChrome() {
+      const navLabels = ["<", ">", "^", "R"];
+      document.querySelectorAll(".explorer-nav-buttons button").forEach((button, index) => {
+        button.textContent = navLabels[index] || button.textContent;
+      });
+
+      const ribbonLabels = ["+", "X", "C", "P", "A", "D", "S", "O", "V", "..."];
+      document.querySelectorAll(".explorer-ribbon button span").forEach((icon, index) => {
+        icon.textContent = ribbonLabels[index] || icon.textContent;
+      });
+
+      const viewLabels = ["=", "[]"];
+      document.querySelectorAll(".explorer-view-switcher button").forEach((button, index) => {
+        button.textContent = viewLabels[index] || button.textContent;
+      });
+    }
+
+    function renderPassivePreview() {
+      preview.innerHTML = `
+        <div class="explorer-preview-empty">
+          <span class="explorer-preview-empty-icon"></span>
+          <p>Select a folder to preview.</p>
+        </div>
+      `;
+    }
+
+    function renderDetailCard(info) {
+      activeInfo = info;
+      const pills = info.tools.map((tool) => `<span>${tool}</span>`).join("");
+      preview.innerHTML = `
+        <article class="explorer-detail-card">
+          <div class="explorer-detail-logo">${info.logo}</div>
+          <p class="explorer-detail-org">${info.organization}</p>
+          <div class="explorer-detail-title-row">
+            <h3>${info.title}</h3>
+            <span class="explorer-detail-status">${info.status}</span>
+          </div>
+          <p>${info.description}</p>
+          <div class="explorer-detail-pills">${pills}</div>
+          <div class="explorer-detail-meta">
+            <span>${info.date}</span>
+            <span>${info.type}</span>
+          </div>
+          <button class="explorer-detail-cta" type="button">View Full Project -></button>
+        </article>
+      `;
+
+      preview.querySelector(".explorer-detail-cta")?.addEventListener("click", () => {
+        if (info.href) {
+          openBrowserTab(info.href, info.title);
+        }
+      });
+    }
+
+    function selectItem(item, info) {
+      document.querySelectorAll(".explorer-item").forEach((entry) => entry.classList.remove("is-selected"));
+      item.classList.add("is-selected");
+
+      if (info) {
+        renderDetailCard(info);
+      }
+    }
+
+    window.renderExplorerGrid = function renderExplorerGrid(context) {
+      const grid = document.getElementById("explorer-files");
+      const breadcrumb = document.getElementById("explorer-breadcrumb-current");
+      const search = document.getElementById("explorer-search-input");
+      const count = document.getElementById("explorer-status-count");
+      const tab = document.querySelector(".explorer-tab.is-active");
+      const category = portfolioData[context] || portfolioData.certifications;
+
+      if (!grid || !category) {
+        return;
+      }
+
+      grid.replaceChildren();
+      activeInfo = null;
+
+      if (breadcrumb) {
+        breadcrumb.textContent = category.label;
+      }
+
+      if (tab) {
+        tab.textContent = category.label;
+      }
+
+      if (search) {
+        search.placeholder = `Search ${category.label}`;
+        search.value = "";
+      }
+
+      if (count) {
+        const itemCount = category.folders.length;
+        count.textContent = `${itemCount} item${itemCount === 1 ? "" : "s"}`;
+      }
+
+      category.folders.forEach((folder) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "explorer-item";
+        item.dataset.folderKey = folder.key;
+        item.innerHTML = `
+          <span class="explorer-folder-icon"></span>
+          <strong>${folder.label}</strong>
+        `;
+        item.addEventListener("click", () => selectItem(item, folder));
+        item.addEventListener("dblclick", () => {
+          selectItem(item, folder);
+          if (folder.href) {
+            openBrowserTab(folder.href, folder.title);
+          }
+        });
+        grid.appendChild(item);
+      });
+
+      const firstItem = grid.querySelector(".explorer-item");
+      firstItem?.classList.add("is-selected");
+      renderPassivePreview();
+    };
+
+    normalizeExplorerChrome();
+    window.renderExplorerGrid("certifications");
+    renderPassivePreview();
+  }
+
+  function updateExplorerSidebar(context) {
+    const rootButtons = document.querySelectorAll("[data-sidebar-root]");
+    const category = portfolioData[context] || portfolioData.certifications;
+
+    rootButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.sidebarRoot === context);
+    });
+
+    window.renderExplorerGrid?.(category ? context : "certifications");
+  }
+
+  function setupExplorerSidebarNavigation() {
+    document.querySelectorAll("[data-sidebar-root]").forEach((button) => {
+      button.addEventListener("click", () => {
+        updateExplorerSidebar(button.dataset.sidebarRoot);
+      });
+    });
+
+    document.querySelectorAll("[data-explorer-context]").forEach((item) => {
+      item.addEventListener("click", () => {
+        updateExplorerSidebar(item.dataset.explorerContext);
+      });
+    });
+
+    updateExplorerSidebar("certifications");
+  }
+
+  function setupDesktopFurina() {
+    const furina = document.getElementById("desktop-furina");
+    const image = furina?.querySelector("img");
+
+    if (!furina || !image) {
+      return;
+    }
+
+    const size = 96;
+    const sprites = {
+      idle: ["webmeji-main/Furina/shime1.png"],
+      walk: [
+        "webmeji-main/Furina/shime1.png",
+        "webmeji-main/Furina/shime2.png",
+        "webmeji-main/Furina/shime3.png",
+        "webmeji-main/Furina/shime2.png"
+      ],
+      climb: [
+        "webmeji-main/Furina/shime15.png",
+        "webmeji-main/Furina/shime16.png",
+        "webmeji-main/Furina/shime17.png"
+      ],
+      sit: ["webmeji-main/Furina/shime11.png", "webmeji-main/Furina/shime11v2.png"]
+    };
+    const state = {
+      x: 420,
+      y: 520,
+      mode: "walk",
+      frame: 0,
+      targetWindow: null,
+      sitUntil: 0,
+      side: "left"
+    };
+
+    function getFloorY() {
+      const bounds = getViewportBounds();
+      return Math.max(70, bounds.height - 158);
+    }
+
+    function getOpenWindows() {
+      return windows
+        .filter((windowElement) => {
+          return windowElement.classList.contains("is-open") && !windowElement.classList.contains("is-closing");
+        })
+        .sort((a, b) => (Number.parseInt(b.style.zIndex || "0", 10) || 0) - (Number.parseInt(a.style.zIndex || "0", 10) || 0));
+    }
+
+    function chooseTargetWindow() {
+      const openWindows = getOpenWindows();
+      const focusedWindow = openWindows.find((windowElement) => windowElement.classList.contains("is-focused"));
+      return focusedWindow || openWindows[0] || null;
+    }
+
+    function getWindowTarget(windowElement) {
+      const bounds = getViewportBounds();
+      const left = windowElement.offsetLeft;
+      const top = windowElement.offsetTop;
+      const width = windowElement.offsetWidth;
+      const side = state.side;
+      const sideX = side === "left" ? left + 20 : left + width - size - 20;
+      const sitX = Math.min(Math.max(left + width / 2 - size / 2, 10), bounds.width - size - 10);
+      const sitY = Math.max(42, top - size + 8);
+
+      return {
+        sideX,
+        sitX,
+        sitY,
+        zIndex: Number.parseInt(windowElement.style.zIndex || "100", 10) || 100
+      };
+    }
+
+    function setMode(mode) {
+      if (state.mode === mode) {
+        return;
+      }
+
+      state.mode = mode;
+      state.frame = 0;
+      furina.classList.toggle("is-climbing", mode === "climb");
+      furina.classList.toggle("is-sitting", mode === "sit");
+    }
+
+    function setSprite() {
+      const frames = sprites[state.mode] || sprites.idle;
+      image.src = frames[state.frame % frames.length];
+      state.frame += 1;
+    }
+
+    function render() {
+      const bounds = getViewportBounds();
+      state.x = Math.min(Math.max(state.x, 8), bounds.width - size - 8);
+      state.y = Math.min(Math.max(state.y, 42), bounds.height - size - 86);
+      furina.style.left = `${state.x}px`;
+      furina.style.top = `${state.y}px`;
+    }
+
+    function tick() {
+      const now = Date.now();
+      const bounds = getViewportBounds();
+
+      if (!state.targetWindow || !state.targetWindow.classList.contains("is-open")) {
+        state.targetWindow = chooseTargetWindow();
+        state.side = Math.random() > 0.5 ? "left" : "right";
+      }
+
+      if (!state.targetWindow) {
+        setMode("walk");
+        state.x += 1.4;
+        if (state.x > bounds.width - size - 24) {
+          state.x = 24;
+        }
+        state.y = getFloorY();
+        furina.classList.toggle("is-facing-left", false);
+        render();
+        return;
+      }
+
+      const target = getWindowTarget(state.targetWindow);
+
+      if (state.mode === "sit") {
+        state.x += (target.sitX - state.x) * 0.18;
+        state.y += (target.sitY - state.y) * 0.18;
+        furina.style.zIndex = String(target.zIndex + 5);
+
+        if (now > state.sitUntil) {
+          state.targetWindow = chooseTargetWindow();
+          state.side = Math.random() > 0.5 ? "left" : "right";
+          setMode("walk");
+        }
+
+        render();
+        return;
+      }
+
+      const floorY = getFloorY();
+
+      if (state.mode !== "climb") {
+        setMode("walk");
+        const deltaX = target.sideX - state.x;
+        const stepX = Math.sign(deltaX) * Math.min(Math.abs(deltaX), 4.2);
+        state.x += stepX;
+        state.y += (floorY - state.y) * 0.12;
+        furina.classList.toggle("is-facing-left", stepX < 0);
+
+        if (Math.abs(deltaX) < 8) {
+          setMode("climb");
+        }
+      } else {
+        state.x += (target.sideX - state.x) * 0.22;
+        state.y -= 5.6;
+        furina.style.zIndex = String(target.zIndex + 5);
+
+        if (state.y <= target.sitY) {
+          state.y = target.sitY;
+          state.x = target.sitX;
+          state.sitUntil = now + 5200;
+          setMode("sit");
+        }
+      }
+
+      render();
+    }
+
+    state.y = getFloorY();
+    render();
+    setSprite();
+    window.setInterval(setSprite, 260);
+    window.setInterval(tick, 32);
+  }
+
   function updateClock() {
     if (!clock) {
       return;
@@ -893,6 +1454,9 @@
 
   addRecentWindow("about");
   setupGuestbook();
+  setupExplorerWindow();
+  setupExplorerSidebarNavigation();
+  setupDesktopFurina();
   updateClock();
   window.setInterval(updateClock, 30000);
 })();

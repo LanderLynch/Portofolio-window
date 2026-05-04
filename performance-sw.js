@@ -1,5 +1,5 @@
-const STATIC_CACHE = "portfolio-static-v27";
-const RUNTIME_CACHE = "portfolio-runtime-v27";
+const STATIC_CACHE = "portfolio-static-v28";
+const RUNTIME_CACHE = "portfolio-runtime-v28";
 const CORE_ASSETS = [
   "/",
   "/index.html",
@@ -12,10 +12,7 @@ const CORE_ASSETS = [
   "/performance-utils.js",
   "/zoom-controls.css",
   "/zoom-controls.js",
-  "/theme-init.js",
-  "/webmeji-main/webmeji.css",
-  "/webmeji-main/config.js",
-  "/webmeji-main/webmeji.js"
+  "/theme-init.js"
 ];
 
 self.addEventListener("install", (event) => {
