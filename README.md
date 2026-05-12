@@ -1,42 +1,410 @@
-# Portfolio Site
+# Jona Setiawan Portfolio
 
-This repository is a static portfolio site built with HTML, CSS, JavaScript, and Firebase.
+Static desktop-style portfolio website for Jona Setiawan. The site is built with plain HTML, CSS, and JavaScript, with Firebase used for optional live data features such as Firestore projects, guestbook messages, user profiles, avatar uploads, and hosted photography images.
 
-## Project Structure
+This README is written as a handoff note for the next AI or developer who continues the project.
 
-- `index.html`: main portfolio page
-- `certification.html`: certification archive page
-- `styles.css`: shared site styling
-- `theme-init.js`: early theme bootstrap used before styles load
-- `theme-palettes.css`: shared theme tokens, palette UI styling, and cross-page theme overrides
-- `theme-controls.js`: centralized theme controller and persistence helper
-- `zoom-controls.js`: zoom controls
-- `firebase-config.js`: browser Firebase setup
-- `admin-panel.js`: Firebase Auth and Firestore admin panel logic
-- `firestore.rules`: Firestore security rule template
-- `storage.rules`: Firebase Storage security rule template
-- `.env.example`: safe environment variable template
+## Quick Start
 
-## Theme System
+There is no package manager, build step, or framework.
 
-- The selected palette is stored in `localStorage` under `portfolio-color-theme`.
-- `theme-init.js` sets `data-theme` on `document.documentElement` before styles load so the saved palette is restored immediately on navigation.
-- `theme-controls.js` is the single source of truth for applying themes, updating the theme buttons, syncing `html` and `body`, and responding to `storage` changes across tabs.
-- Shared palette selectors now target `:root[data-theme="..."]` so page-level styles can inherit the active theme without waiting for late body updates.
-- New pages that need palette support should load `theme-init.js` in the `<head>`, then load `theme-palettes.css`, and include `theme-controls.js`.
+Run the site from a local static server so module scripts, Firebase Auth, Firestore, and iframes behave correctly:
 
-## Firebase Notes
+```bash
+python -m http.server 8000
+```
 
-- The Firebase web config in `firebase-config.js` is for browser use.
-- Do not place a Firebase service account JSON key in this repo or in browser code.
-- Replace `REPLACE_WITH_YOUR_ADMIN_UID` in `firestore.rules` with your real Firebase Auth UID.
-- `firestore.rules` and `storage.rules` are separate. Firestore rules do not secure Storage, and Storage rules do not secure Firestore.
-- See `FIREBASE_SECURITY.md` for security guidance.
+Then open:
 
-## Local Development
+```text
+http://localhost:8000/index.html
+```
 
-Open the HTML files with a local web server rather than `file://` if you want Firebase features like Auth and Firestore to work properly.
+Opening files directly with `file://` can work for basic HTML/CSS previewing, but Firebase and some browser features may fail.
 
-## Security
+## Current Main Experience
 
-If a service account key was exposed, revoke it immediately in Firebase / Google Cloud and generate a new one.
+The active homepage is:
+
+- `index.html`
+- `desktop-layout.css`
+- `desktop-layout.js`
+
+The homepage is a Windows/macOS-style desktop portfolio. It contains draggable/resizable windows for About, Projects, Skills, Experience, Achievement, Certifications, Browser, and Guestbook. Project links are opened inside an in-page browser iframe window when possible.
+
+Important: the root `index.html` currently only loads `desktop-layout.js`. Older shared scripts such as `admin-panel.js`, `testimonials-guestbook.js`, `theme-controls.js`, and `zoom-controls.js` are still used by other pages or kept for prior site versions, but they are not loaded on the current desktop homepage unless added manually.
+
+## Repository Map
+
+```text
+.
++-- index.html                         # Main desktop portfolio entry
++-- desktop-layout.css                 # Main desktop UI styling
++-- desktop-layout.js                  # Window system, browser tabs, explorer data, local guestbook, Furina desktop sprite
++-- certification.html                 # Certification archive page
++-- changelog.html                     # Dated changelog page
++-- project/
+|   +-- pages/                         # Portfolio project detail pages
+|   +-- scripts/photography-archive.js # Photography archive data model
+|   +-- assets/                        # Local project images, PDFs, cursors, source files
++-- webmeji-main/                      # Webmeji/Shimeji-style mascot engine and sprite assets
++-- firebase-config.js                 # Browser Firebase SDK setup
++-- admin-panel.js                     # Firestore project admin panel logic for older/main portfolio UI
++-- testimonials-guestbook.js          # Firebase guestbook, auth, profile, avatar upload logic
++-- project-card-utils.js              # Shared dynamic project card generator
++-- language-controls.js               # ID/EN language toggle and translations
++-- theme-init.js                      # Early theme bootstrap
++-- theme-controls.js                  # Theme persistence and theme button syncing
++-- theme-palettes.css                 # Shared theme tokens and cross-page theme styles
++-- zoom-controls.js / zoom-controls.css
++-- performance-utils.js               # Lazy/image performance helpers
++-- performance-sw.js                  # Service worker cache helper
++-- firestore.rules                    # Firestore security rules
++-- storage.rules                      # Firebase Storage security rules
++-- FIREBASE_SECURITY.md               # Extra Firebase security notes
+```
+
+There are duplicated `webmeji-main/webmeji-main/` files and sprite folders. Treat the top-level `webmeji-main/config.js`, `webmeji-main/webmeji.js`, and `webmeji-main/Furina/` as the active copy used by most pages.
+
+## Main Code Areas
+
+### Desktop Homepage
+
+`desktop-layout.js` is the brain of the current homepage.
+
+It handles:
+
+- opening, focusing, closing, maximizing, dragging, and resizing desktop windows
+- taskbar recent-window buttons
+- browser tabs inside `#window-browser`
+- intercepting `.html` and external links and opening them in the portfolio browser
+- File Explorer-style project/certification/skill/photography preview data
+- local-only homepage guestbook stored in `localStorage`
+- animated Furina sprite that walks/climbs/sits around the desktop windows
+- the clock in the menu bar
+
+The desktop explorer data is hardcoded in `portfolioData` inside `desktop-layout.js`. If you add a new project to the desktop explorer, update both:
+
+- the visible project card markup in `index.html`
+- the related `portfolioData.projects.folders` entry in `desktop-layout.js`
+
+### Project Pages
+
+Project detail pages live in `project/pages/`.
+
+Most pages are standalone HTML files with inline page-specific CSS and JavaScript. They usually load these shared helpers near the bottom:
+
+- `../../language-controls.js`
+- `../../theme-controls.js`
+- `../../zoom-controls.js`
+- `../../webmeji-main/config.js`
+- `../../webmeji-main/webmeji.js`
+
+When creating a new project page, follow the path style already used in `project/pages/*.html`: assets should usually reference `../assets/...`, while shared root scripts use `../../...`.
+
+### Photography Archive
+
+The photography page is data-driven:
+
+- Page: `project/pages/photography.html`
+- Data: `project/scripts/photography-archive.js`
+
+`photography-archive.js` defines `window.photographyArchive`, an array of entries with this shape:
+
+```js
+{
+  year: 2026,
+  slug: "example-slug",
+  title: "Project Title",
+  dateLabel: "January 2026",
+  projectType: "Client Event Documentation",
+  location: "Short context",
+  description: "Short archive description",
+  folderLink: "https://drive.google.com/...", // optional
+  coverImage: buildStorageMediaUrl("photography/.../cover.JPG"),
+  images: buildSortImages("photography/.../", ["file1.JPG", "file2.JPG"]),
+  sorts: [/* optional sub-gallery groups */]
+}
+```
+
+The image URLs point to Firebase Storage public media URLs. Add new Firebase Storage image paths to `photography-archive.js`; do not manually paste long Firebase download URLs unless needed.
+
+### Certification Archive
+
+The certification page is mostly static:
+
+- Page: `certification.html`
+- Files: `project/assets/certification-files/`
+
+To add a certificate, add a new `.certificate-card` in `certification.html` and place the file under `project/assets/certification-files/`. Update the card's `data-category` and `data-type` so search/filter UI continues to work.
+
+### Language System
+
+`language-controls.js` injects a floating `ID / ENG` language toggle and stores the selected language in:
+
+```text
+localStorage key: portfolio-language
+```
+
+It translates using two methods:
+
+- keyed elements: `data-i18n-key` or `data-i18n-html-key`
+- exact text replacement from the large `textPairs` and `attributePairs` maps
+
+For new text on shared/project pages, the cleanest approach is to add either:
+
+```html
+<span data-i18n-key="new-key">English text</span>
+```
+
+and then define the key in `keyedTranslations`, or add exact text pairs to `textPairs`.
+
+### Theme System
+
+Shared theme state is handled by:
+
+- `theme-init.js`
+- `theme-controls.js`
+- `theme-palettes.css`
+
+Theme selection is stored in:
+
+```text
+localStorage key: portfolio-color-theme
+```
+
+Supported values are currently:
+
+- `blue`
+- `light`
+- `galaxy`
+
+Pages that need shared theme support should load `theme-init.js` in the `<head>` before styles, then load `theme-controls.js` near the bottom.
+
+### Zoom System
+
+`zoom-controls.js` expects the page to include the `#page-zoom-control` markup. It writes:
+
+```css
+body {
+  --page-zoom: 0.8;
+}
+```
+
+The current script defaults to `80%`, with a 60-120 range. Some pages include per-page `data-zoom-storage-key` attributes, but the current script uses the shared key internally:
+
+```text
+localStorage key: portfolio-shared-page-zoom
+```
+
+### Webmeji / Furina Mascot
+
+Active files:
+
+- `webmeji-main/config.js`
+- `webmeji-main/webmeji.js`
+- `webmeji-main/webmeji.css`
+- `webmeji-main/Furina/*.png`
+
+`config.js` defines `window.SPAWNING` and the `FURINA_CONFIG` animation/action map. `webmeji.js` preloads frames, creates the sprite, then runs movement, falling, drag, pet, edge, and mouse-chase behavior.
+
+The desktop homepage also has a separate simplified Furina sprite implemented directly in `desktop-layout.js` and `desktop-layout.css`. So there are two mascot systems:
+
+- desktop homepage: custom built into `desktop-layout.js`
+- project/certification/changelog pages: shared Webmeji engine
+
+## Firebase Data Model
+
+Firebase web app setup is in `firebase-config.js`. It initializes:
+
+- Firebase App
+- Auth
+- Firestore
+- Storage
+
+The config is public browser config. Do not put service account JSON, admin SDK secrets, or private keys in browser code.
+
+### Firestore Collections
+
+Rules are in `firestore.rules`.
+
+#### `projects`
+
+Used by `admin-panel.js`.
+
+Expected fields:
+
+```js
+{
+  title: string,
+  category: string,
+  status: string,
+  description: string,
+  imageUrl: string,
+  projectLink: string,
+  dateLabel: string,
+  projectType: string,
+  techStack: string[],
+  createdAt: serverTimestamp()
+}
+```
+
+Rules:
+
+- public read
+- write only by admin UID `SGqCpB7UmfeO1I8BiWug6EH8W1N2`
+
+#### `guestbookMessages`
+
+Used by `testimonials-guestbook.js`.
+
+Expected fields:
+
+```js
+{
+  uid: string,
+  displayName: string,
+  photoURL: string,
+  avatarPosition: string,
+  provider: "author" | "google.com" | "guest-username" | string,
+  usernameKey: string,
+  text: string,
+  createdAt: serverTimestamp()
+}
+```
+
+Rules:
+
+- public read
+- signed-in users can create messages only for their own UID
+- message text must be 1-400 characters
+- update/delete only by admin UID
+
+#### `users`
+
+Used by `testimonials-guestbook.js` for profile and avatar state.
+
+Expected fields:
+
+```js
+{
+  username: string,
+  usernameKey: string,
+  displayName: string,
+  photoURL: string,
+  avatarPosition: string,
+  avatarStoragePath: string,
+  provider: string,
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp()
+}
+```
+
+Rules:
+
+- each signed-in user can read/write only their own document
+
+### Firebase Storage Paths
+
+Rules are in `storage.rules`.
+
+#### `guestbook-avatars/{userId}/{fileName}`
+
+Used by custom guestbook avatar uploads.
+
+Rules:
+
+- public read
+- create/update only by the signed-in owner
+- file must be an image
+- file size must be under 2 MB
+- delete only by the owner
+
+#### `photography/{allPaths=**}`
+
+Used by `project/scripts/photography-archive.js`.
+
+Rules:
+
+- public read
+- no public writes
+
+All other Storage paths are denied by default.
+
+## Common Editing Tasks
+
+### Add A Desktop Homepage Project
+
+1. Add a new card in `index.html` inside `.project-grid-archive`.
+2. Add or reuse preview assets under `project/assets/...`.
+3. Add the matching explorer folder entry in `portfolioData.projects.folders` inside `desktop-layout.js`.
+4. If it has a detail page, create it under `project/pages/` and link to it with a relative path like `project/pages/new-page.html`.
+
+### Add A Project Detail Page
+
+1. Copy the structure from an existing page in `project/pages/`.
+2. Keep shared scripts at the bottom with `../../` paths.
+3. Add local assets under `project/assets/<project-name>/`.
+4. Link the new page from `index.html` and `desktop-layout.js`.
+5. Add translations to `language-controls.js` if the page should support ID/EN switching.
+
+### Add Photography Work
+
+1. Upload images to Firebase Storage under `photography/{year}/{month-or-project}/...`.
+2. Add folder/file constants in `project/scripts/photography-archive.js`.
+3. Add a new entry to `window.photographyArchive`.
+4. Check `project/pages/photography.html` in a browser and verify the cover, filter, preview, and lightbox.
+
+### Add A Certification
+
+1. Add the PDF/JPG under `project/assets/certification-files/`.
+2. Add a `.certificate-card` in `certification.html`.
+3. Set `data-category` and `data-type`.
+4. Confirm search and dropdown filters still show the new file.
+
+### Change Firebase Rules
+
+1. Edit `firestore.rules` or `storage.rules`.
+2. Keep public reads only where needed.
+3. Keep admin-only writes tied to the current admin UID unless the auth model changes.
+4. Deploy rules from Firebase CLI outside this repo workflow.
+
+## Important Notes For The Next AI
+
+- Do not assume all old scripts are active on the current homepage. Check script tags first.
+- The current homepage guestbook is local-only in `desktop-layout.js`; the richer Firebase guestbook is in `testimonials-guestbook.js` and needs matching HTML to run.
+- `admin-panel.js` depends on form and admin popout elements that are not present in the current `index.html`.
+- Project pages are mostly standalone, so changing shared CSS may not affect every page.
+- `language-controls.js` uses exact text replacement, so changing English copy can silently break translations until the text map is updated.
+- `desktop-layout.js` contains hardcoded portfolio data separate from the visible HTML cards.
+- The Firebase web config is safe to expose, but service account keys are not.
+- There are many large binary assets in `project/assets/`; avoid renaming or moving them unless you update every reference.
+- Some text in older files may contain mojibake characters from encoding issues. Preserve behavior first, then clean encoding only when specifically working on that file.
+
+## Security Checklist
+
+- Never commit Firebase service account JSON.
+- Never add admin SDK credentials to browser JavaScript.
+- Keep admin UID checks in both client logic and Firebase rules.
+- Keep guestbook avatar uploads restricted by UID, content type, and size.
+- If any private key was ever committed, revoke it in Google Cloud/Firebase immediately.
+
+## Manual QA Checklist
+
+Before handing off a change, open these pages through a local server:
+
+- `index.html`
+- `certification.html`
+- `changelog.html`
+- `project/pages/photography.html`
+- any project page you edited
+
+Check:
+
+- desktop windows open, focus, drag, resize, close, and maximize
+- project links open in the portfolio browser
+- mobile layout does not overflow
+- theme switching still persists across pages
+- language switching still updates visible text
+- Webmeji/Furina loads and can be dragged on pages that use it
+- Firebase-backed features still respect Auth and security rules

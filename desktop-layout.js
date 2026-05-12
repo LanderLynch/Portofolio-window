@@ -228,6 +228,202 @@
     return Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--desktop-zoom")) || 1;
   }
 
+  function prefersReducedMotion() {
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  }
+
+  function sleep(duration) {
+    return new Promise((resolve) => window.setTimeout(resolve, duration));
+  }
+
+  function animateElement(element, keyframes, options) {
+    if (!element?.animate) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const animation = element.animate(keyframes, options);
+      animation.addEventListener("finish", resolve, { once: true });
+      animation.addEventListener("cancel", resolve, { once: true });
+    });
+  }
+
+  function stripMotionCloneIds(element) {
+    element.removeAttribute("id");
+    element.querySelectorAll("[id]").forEach((child) => child.removeAttribute("id"));
+  }
+
+  function createMotionWindowClone(windowElement, rect) {
+    const clone = windowElement.cloneNode(true);
+    stripMotionCloneIds(clone);
+    clone.setAttribute("aria-hidden", "true");
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.minWidth = "0";
+    clone.style.minHeight = "0";
+    clone.style.maxWidth = "none";
+    clone.style.maxHeight = "none";
+    clone.style.left = "0";
+    clone.style.top = "0";
+    return clone;
+  }
+
+  function createMotionLayer(windowElement, rect) {
+    const layer = document.createElement("div");
+    layer.className = "window-motion-clone";
+    layer.style.left = `${rect.left}px`;
+    layer.style.top = `${rect.top}px`;
+    layer.style.width = `${rect.width}px`;
+    layer.style.height = `${rect.height}px`;
+    layer.style.borderRadius = getComputedStyle(windowElement).borderRadius;
+    layer.appendChild(createMotionWindowClone(windowElement, rect));
+    document.body.appendChild(layer);
+    return layer;
+  }
+
+  async function dissolveWindow(windowElement) {
+    const rect = windowElement.getBoundingClientRect();
+
+    if (prefersReducedMotion()) {
+      const layer = createMotionLayer(windowElement, rect);
+      windowElement.classList.add("is-motion-hidden");
+      await animateElement(layer, [
+        { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
+        { opacity: 0, transform: "translate3d(0, 12px, 0) scale(0.97)" }
+      ], { duration: 180, easing: "ease-out", fill: "forwards" });
+      layer.remove();
+      return;
+    }
+
+    const rows = 5;
+    const columns = 7;
+    const fragments = [];
+    const radius = getComputedStyle(windowElement).borderRadius;
+
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const x = (rect.width / columns) * column;
+        const y = (rect.height / rows) * row;
+        const width = Math.ceil(rect.width / columns) + 2;
+        const height = Math.ceil(rect.height / rows) + 2;
+        const fragment = document.createElement("div");
+        const viewport = document.createElement("div");
+
+        fragment.className = "window-dust-fragment";
+        fragment.style.left = `${rect.left + x}px`;
+        fragment.style.top = `${rect.top + y}px`;
+        fragment.style.width = `${width}px`;
+        fragment.style.height = `${height}px`;
+        fragment.style.borderRadius = radius;
+
+        viewport.style.position = "absolute";
+        viewport.style.left = `${-x}px`;
+        viewport.style.top = `${-y}px`;
+        viewport.style.width = `${rect.width}px`;
+        viewport.style.height = `${rect.height}px`;
+        viewport.appendChild(createMotionWindowClone(windowElement, rect));
+        fragment.appendChild(viewport);
+        document.body.appendChild(fragment);
+        fragments.push({ fragment, row, column });
+      }
+    }
+
+    windowElement.classList.add("is-motion-hidden");
+    await sleep(90);
+
+    const centerX = (columns - 1) / 2;
+    const centerY = (rows - 1) / 2;
+    await Promise.all(fragments.map(({ fragment, row, column }) => {
+      const driftX = (column - centerX) * 26 + (Math.random() - 0.5) * 42;
+      const driftY = -26 + (row - centerY) * 18 + Math.random() * 54;
+      const rotate = (Math.random() - 0.5) * 8;
+      const delay = Math.random() * 210 + row * 24 + column * 10;
+
+      return animateElement(fragment, [
+        { opacity: 1, transform: "translate3d(0, 0, 0) rotate(0deg) scale(1)", filter: "blur(0)" },
+        { opacity: 0.88, offset: 0.28, filter: "blur(1.5px)" },
+        { opacity: 0, transform: `translate3d(${driftX}px, ${driftY}px, 0) rotate(${rotate}deg) scale(0.82)`, filter: "blur(7px)" }
+      ], {
+        duration: 1100 + Math.random() * 360,
+        delay,
+        easing: "cubic-bezier(0.16, 0.74, 0.24, 1)",
+        fill: "forwards"
+      });
+    }));
+
+    fragments.forEach(({ fragment }) => fragment.remove());
+  }
+
+  function getMinimizeTarget(name) {
+    return taskbarRecents?.querySelector(`[data-taskbar-window="${name}"]`) ||
+      document.querySelector(`[data-window-target="${name}"]`) ||
+      document.querySelector(".dock");
+  }
+
+  async function genieMinimizeWindow(windowElement, targetElement) {
+    const rect = windowElement.getBoundingClientRect();
+    const targetRect = targetElement?.getBoundingClientRect?.() || {
+      left: rect.left + rect.width * 0.5,
+      top: window.innerHeight - 48,
+      width: 56,
+      height: 40
+    };
+    const layer = createMotionLayer(windowElement, rect);
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+    const dx = targetCenterX - rect.left;
+    const dy = targetCenterY - rect.top;
+    const scaleX = Math.max(0.045, Math.min(0.16, targetRect.width / rect.width));
+    const scaleY = Math.max(0.04, Math.min(0.12, targetRect.height / rect.height));
+
+    layer.style.transformOrigin = "0 100%";
+    windowElement.classList.add("is-motion-hidden");
+
+    if (prefersReducedMotion()) {
+      await animateElement(layer, [
+        { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
+        { opacity: 0, transform: `translate3d(${dx}px, ${dy}px, 0) scale(${scaleX}, ${scaleY})` }
+      ], { duration: 180, easing: "ease-out", fill: "forwards" });
+      layer.remove();
+      return;
+    }
+
+    await animateElement(layer, [
+      {
+        opacity: 1,
+        transform: "translate3d(0, 0, 0) scale(1, 1) skewY(0deg)",
+        clipPath: "inset(0 0 0 0 round 26px)",
+        filter: "blur(0)"
+      },
+      {
+        opacity: 0.96,
+        offset: 0.38,
+        transform: `translate3d(${dx * 0.18}px, ${dy * 0.18}px, 0) scale(0.9, 0.88) skewY(-1.5deg)`,
+        clipPath: "inset(2% 8% 0 8% round 24px)",
+        filter: "blur(0.5px)"
+      },
+      {
+        opacity: 0.62,
+        offset: 0.72,
+        transform: `translate3d(${dx * 0.64}px, ${dy * 0.72}px, 0) scale(0.34, 0.2) skewY(-5deg)`,
+        clipPath: "inset(12% 32% 26% 32% round 18px)",
+        filter: "blur(2px)"
+      },
+      {
+        opacity: 0,
+        transform: `translate3d(${dx}px, ${dy}px, 0) scale(${scaleX}, ${scaleY}) skewY(-8deg)`,
+        clipPath: "inset(26% 44% 42% 44% round 14px)",
+        filter: "blur(5px)"
+      }
+    ], {
+      duration: 980,
+      easing: "cubic-bezier(0.2, 0.86, 0.2, 1)",
+      fill: "forwards"
+    });
+
+    layer.remove();
+  }
+
   function focusWindow(windowElement) {
     if (!windowElement) {
       return;
@@ -243,7 +439,7 @@
   function syncRecentActive(activeName) {
     taskbarRecents?.querySelectorAll("[data-taskbar-window]").forEach((button) => {
       const windowElement = document.querySelector(`[data-window="${button.dataset.taskbarWindow}"]`);
-      const isOpen = windowElement?.classList.contains("is-open");
+      const isOpen = windowElement?.classList.contains("is-open") && !windowElement.classList.contains("is-minimized");
       button.classList.toggle("is-active", isOpen && button.dataset.taskbarWindow === activeName);
     });
   }
@@ -284,7 +480,11 @@
     }
 
     stabilizeWindowFrame(windowElement);
-    windowElement.classList.remove("is-closing");
+    if (windowElement.dataset.motionState) {
+      return;
+    }
+
+    windowElement.classList.remove("is-closing", "is-minimized", "is-motion-hidden");
     windowElement.classList.add("is-open");
     focusWindow(windowElement);
     addRecentWindow(name);
@@ -311,8 +511,26 @@
     windowElement.dataset.frameReady = "true";
   }
 
+  function finishWindowClose(windowElement) {
+    windowElement.classList.remove("is-open", "is-maximized", "is-closing", "is-focused", "is-minimized", "is-motion-hidden");
+    delete windowElement.dataset.motionState;
+    removeRecentWindow(windowElement.dataset.window);
+    syncRecentActive(null);
+  }
+
   function closeWindow(windowElement) {
-    if (!windowElement || !windowElement.classList.contains("is-open")) {
+    if (!windowElement || (!windowElement.classList.contains("is-open") && !windowElement.classList.contains("is-minimized"))) {
+      return;
+    }
+
+    if (windowElement.dataset.motionState) {
+      return;
+    }
+
+    if (windowElement.dataset.window === "about" && windowElement.classList.contains("is-open")) {
+      windowElement.dataset.motionState = "closing";
+      removeRecentWindow(windowElement.dataset.window);
+      dissolveWindow(windowElement).catch(() => {}).finally(() => finishWindowClose(windowElement));
       return;
     }
 
@@ -321,9 +539,32 @@
     removeRecentWindow(windowElement.dataset.window);
 
     window.setTimeout(() => {
-      windowElement.classList.remove("is-closing", "is-focused");
-      syncRecentActive(null);
+      finishWindowClose(windowElement);
     }, 260);
+  }
+
+  function finishWindowMinimize(windowElement) {
+    windowElement.classList.remove("is-open", "is-focused", "is-maximized", "is-motion-hidden");
+    windowElement.classList.add("is-minimized");
+    delete windowElement.dataset.motionState;
+    syncRecentActive(null);
+  }
+
+  function minimizeWindow(windowElement) {
+    if (!windowElement || !windowElement.classList.contains("is-open") || windowElement.dataset.motionState) {
+      return;
+    }
+
+    const name = windowElement.dataset.window;
+    addRecentWindow(name);
+
+    if (name === "about") {
+      windowElement.dataset.motionState = "minimizing";
+      genieMinimizeWindow(windowElement, getMinimizeTarget(name)).catch(() => {}).finally(() => finishWindowMinimize(windowElement));
+      return;
+    }
+
+    finishWindowMinimize(windowElement);
   }
 
   function toggleMaximize(windowElement) {
@@ -723,8 +964,15 @@
     section.innerHTML = `
       <div class="window-titlebar">
         <div class="traffic-lights">
-          <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Browser"></button>
-          <button class="traffic close" type="button" data-window-close aria-label="Close Browser"></button>
+          <button class="traffic minimize" type="button" data-window-minimize aria-label="Minimize Browser">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"></path></svg>
+          </button>
+          <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Browser">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7.5h6.5a2 2 0 0 1 2 2V16"></path><path d="M15.5 16.5H9a2 2 0 0 1-2-2V8"></path></svg>
+          </button>
+          <button class="traffic close" type="button" data-window-close aria-label="Close Browser">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12"></path><path d="M18 6 6 18"></path></svg>
+          </button>
         </div>
         <p id="${name}-title">${title || "Portfolio Browser"}</p>
       </div>
@@ -986,6 +1234,10 @@
       closeWindow(windowElement);
     });
 
+    windowElement.querySelector("[data-window-minimize]")?.addEventListener("click", () => {
+      minimizeWindow(windowElement);
+    });
+
     windowElement.querySelector("[data-window-maximize]")?.addEventListener("click", () => {
       toggleMaximize(windowElement);
     });
@@ -1054,6 +1306,10 @@
     const notesElement = document.getElementById("guestbook-notes");
 
     if (!form || !nameInput || !messageInput || !notesElement) {
+      return;
+    }
+
+    if (form.dataset.guestbookSource === "firebase") {
       return;
     }
 

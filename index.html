@@ -42,28 +42,177 @@
       <section class="desktop-window is-open is-focused" id="window-about" data-window="about" aria-labelledby="about-title">
         <div class="window-titlebar">
           <div class="traffic-lights">
-            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize About"></button>
-            <button class="traffic close" type="button" data-window-close aria-label="Close About"></button>
+            <button class="traffic minimize" type="button" data-window-minimize aria-label="Minimize About">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"></path></svg>
+            </button>
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize About">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7.5h6.5a2 2 0 0 1 2 2V16"></path><path d="M15.5 16.5H9a2 2 0 0 1-2-2V8"></path></svg>
+            </button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close About">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12"></path><path d="M18 6 6 18"></path></svg>
+            </button>
           </div>
-          <p>About.exe</p>
+          <p>About Workspace</p>
         </div>
-        <div class="window-content about-layout">
-          <div class="profile-wrap">
-            <div class="profile-panel">
-              <img src="https://i.pinimg.com/736x/51/6b/3d/516b3dfcab87be8bbf46c9ed05184eeb.jpg" alt="Jona Setiawan profile" />
+        <div class="window-content about-layout about-workspace">
+          <aside class="about-command-panel" aria-label="Jona workspace overview">
+            <div class="about-greeting">
+              <p class="about-kicker">Jona OS</p>
+              <h1 id="about-title">Good evening, Jona</h1>
+              <p>Creative designer dashboard for visual identity, GFX, photography, and web portfolio work.</p>
             </div>
-            <span>Available for creative design work</span>
-          </div>
-          <div>
-            <p class="eyebrow">Multimedia Designer</p>
-            <h1 id="about-title">Jona Setiawan</h1>
-            <p class="lead">I build visual identities, GFX edits, product mockups, photography archives, and web layouts with a strong focus on presentation, detail, and visual storytelling.</p>
-            <div class="quick-actions">
+
+            <section class="about-mini-section" aria-labelledby="recent-drafts-title">
+              <div class="about-section-head">
+                <h2 id="recent-drafts-title">Recent Drafts</h2>
+                <div class="about-icon-actions">
+                  <button type="button" aria-label="Search recent drafts">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 20-4.2-4.2"></path><circle cx="10.5" cy="10.5" r="5.5"></circle></svg>
+                  </button>
+                  <button type="button" aria-label="Add draft">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="draft-list">
+                <button type="button"><span>Brand Identity</span><strong>Lariso packaging refinement</strong></button>
+                <button type="button"><span>GFX Study</span><strong>Character poster lighting pass</strong></button>
+                <button type="button"><span>Photography</span><strong>Archive layout and frame curation</strong></button>
+              </div>
+              <button class="about-text-link" type="button" data-window-target="projects">See more</button>
+            </section>
+
+            <section class="about-mini-section about-inbox" aria-labelledby="thought-inbox-title">
+              <div class="about-section-head">
+                <h2 id="thought-inbox-title">Thought Inbox</h2>
+                <div class="about-icon-actions">
+                  <button type="button" aria-label="Search thought inbox">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 20-4.2-4.2"></path><circle cx="10.5" cy="10.5" r="5.5"></circle></svg>
+                  </button>
+                  <button type="button" aria-label="Add thought">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="about-inbox-tools">
+                <span>Expand all</span>
+                <span>Select all</span>
+              </div>
+              <div class="thought-stack">
+                <article class="thought-card is-expanded">
+                  <label><input type="checkbox" /> Visual systems for portfolio OS</label>
+                  <p>Build every page from the same calm glass language so future project windows feel native, not pasted on.</p>
+                </article>
+                <article class="thought-card">
+                  <label><input type="checkbox" /> Motion that explains state</label>
+                  <p>Use animation for opening, closing, minimizing, and focus changes. Keep everyday movement restrained.</p>
+                </article>
+                <article class="thought-card">
+                  <label><input type="checkbox" /> Archive as workspace</label>
+                  <p>Projects, certificates, and photo work should feel like living files inside one personal operating system.</p>
+                </article>
+              </div>
+            </section>
+          </aside>
+
+          <section class="about-card-grid about-project-scroll" aria-label="Latest project cards">
+            <a class="workspace-card project-preview-card is-featured-project" href="project/pages/personal-gfx-design-collection.html" data-browser-tab="Personal GFX">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Personal GFX Design Collection</h2>
+                  <span>GFX Design / Personal Project</span>
+                </div>
+                <strong class="project-status is-ongoing">Still Going</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/design-gfx/Chisa GFX design.jpg');">
+                <img src="project/assets/design-gfx/Chisa GFX design.jpg" alt="Personal GFX Design Collection preview" loading="eager" decoding="async" fetchpriority="high" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/ikm-design-creative-project.html" data-browser-tab="IKM Design">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Designer Bag on IKM</h2>
+                  <span>Main Work / Bag Design</span>
+                </div>
+                <strong class="project-status is-ongoing">Still Going</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/ikm-project/2025/October/preview nestle CCSD tas bunga oren.jpg');">
+                <img src="project/assets/ikm-project/2025/October/preview nestle CCSD tas bunga oren.jpg" alt="Designer Bag on IKM preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/honkai-star-rail-e-money-transit-series.html" data-browser-tab="Honkai E-Money">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Honkai: Star Rail E-Money</h2>
+                  <span>Client Work / Transit Card</span>
+                </div>
+                <strong class="project-status is-completed">Completed</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/E-Money card Design Honkai star rail/Preview depan E-money HSR.jpg');">
+                <img src="project/assets/E-Money card Design Honkai star rail/Preview depan E-money HSR.jpg" alt="Honkai Star Rail E-Money project preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/lariso-brand-identity.html" data-browser-tab="Lariso Identity">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Lariso Brand Identity</h2>
+                  <span>Client Work / Packaging</span>
+                </div>
+                <strong class="project-status is-completed">Completed</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/lariso-project/lariso mock up concept final banner.jpg');">
+                <img src="project/assets/lariso-project/lariso mock up concept final banner.jpg" alt="Lariso Brand Identity preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/documentary-kota-tua-ukk.html" data-browser-tab="Kota Tua Documentary">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Documentary Kota Tua UKK</h2>
+                  <span>School Project / Documentary</span>
+                </div>
+                <strong class="project-status is-ongoing">Still Going</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/logo-preview/yuppentek-logo-kota-tua-version-banner.jpg');">
+                <img src="project/assets/logo-preview/yuppentek-logo-kota-tua-version-banner.jpg" alt="Documentary Kota Tua UKK preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/logo-design-collection.html" data-browser-tab="Logo Collection">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Logo Design Collection</h2>
+                  <span>Brand Identity / Logo Work</span>
+                </div>
+                <strong class="project-status is-completed">Completed</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/logo-preview/Folder UI Design.jpg');">
+                <img src="project/assets/logo-preview/Folder UI Design.jpg" alt="Logo Design Collection preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <a class="workspace-card project-preview-card" href="project/pages/marketing-assistant-hr.html" data-browser-tab="Marketing HR">
+              <div class="workspace-card-head">
+                <div>
+                  <h2>Marketing &amp; Assistant HR</h2>
+                  <span>Training / PKL Project</span>
+                </div>
+                <strong class="project-status is-completed">Completed</strong>
+              </div>
+              <div class="project-picture-stage" style="--project-image: url('project/assets/logo-preview/fortress-logo.jpg');">
+                <img src="project/assets/logo-preview/fortress-logo.jpg" alt="Marketing and Assistant HR preview" loading="eager" decoding="async" />
+              </div>
+            </a>
+
+            <div class="about-actions">
               <button type="button" data-window-target="projects">Open Projects</button>
               <button type="button" data-window-target="achievement">View Achievements</button>
               <a href="mailto:jonasaevuddyinsetiawan@gmail.com">Contact</a>
             </div>
-          </div>
+          </section>
         </div>
       </section>
 
@@ -319,8 +468,15 @@
       <section class="desktop-window browser-window" id="window-browser" data-window="browser" aria-labelledby="browser-title">
         <div class="window-titlebar">
           <div class="traffic-lights">
-            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Browser"></button>
-            <button class="traffic close" type="button" data-window-close aria-label="Close Browser"></button>
+            <button class="traffic minimize" type="button" data-window-minimize aria-label="Minimize Browser">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"></path></svg>
+            </button>
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Browser">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7.5h6.5a2 2 0 0 1 2 2V16"></path><path d="M15.5 16.5H9a2 2 0 0 1-2-2V8"></path></svg>
+            </button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Browser">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12"></path><path d="M18 6 6 18"></path></svg>
+            </button>
           </div>
           <p id="browser-title">Portfolio Browser</p>
         </div>
@@ -337,23 +493,45 @@
       <section class="desktop-window window-guestbook" id="window-guestbook" data-window="guestbook" aria-labelledby="guestbook-title">
         <div class="window-titlebar">
           <div class="traffic-lights">
-            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Guestbook"></button>
-            <button class="traffic close" type="button" data-window-close aria-label="Close Guestbook"></button>
+            <button class="traffic minimize" type="button" data-window-minimize aria-label="Minimize Guestbook">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"></path></svg>
+            </button>
+            <button class="traffic maximize" type="button" data-window-maximize aria-label="Maximize Guestbook">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 7.5h6.5a2 2 0 0 1 2 2V16"></path><path d="M15.5 16.5H9a2 2 0 0 1-2-2V8"></path></svg>
+            </button>
+            <button class="traffic close" type="button" data-window-close aria-label="Close Guestbook">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12"></path><path d="M18 6 6 18"></path></svg>
+            </button>
           </div>
           <p>Guestbook.txt</p>
         </div>
-        <div class="window-content guestbook-layout">
-          <div>
-            <p class="eyebrow">Visitor Notes</p>
-            <h2 id="guestbook-title">Guestbook</h2>
-            <p class="lead">Leave a small note for the portfolio. Messages stay in this browser using local storage, so the page feels alive without needing a server.</p>
-          </div>
-          <form class="guestbook-form" id="guestbook-form">
-            <input id="guestbook-name" type="text" placeholder="Name" aria-label="Name" required />
-            <textarea id="guestbook-message" placeholder="Message" aria-label="Message" required></textarea>
-            <button type="submit">Add note</button>
+        <div class="window-content guestbook-layout guestbook-morphism">
+          <section class="guestbook-hero" aria-labelledby="guestbook-title">
+            <p class="eyebrow">Firebase Guestbook</p>
+            <h2 id="guestbook-title">Leave a signal</h2>
+            <p class="lead">Write a small note for the portfolio. Messages sync through Firestore so future visitors can see the conversation too.</p>
+          </section>
+          <form class="guestbook-form" id="guestbook-form" data-guestbook-source="firebase">
+            <label>
+              <span>Name</span>
+              <input id="guestbook-name" type="text" placeholder="Your name" aria-label="Name" maxlength="48" autocomplete="name" required />
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea id="guestbook-message" placeholder="Say something kind, useful, or curious..." aria-label="Message" maxlength="400" required></textarea>
+            </label>
+            <div class="guestbook-form-footer">
+              <p class="guestbook-status" id="guestbook-status" aria-live="polite">Connecting to Firebase...</p>
+              <button type="submit" id="guestbook-submit">Send note</button>
+            </div>
           </form>
-          <div class="guestbook-notes" id="guestbook-notes" aria-live="polite"></div>
+          <section class="guestbook-feed-panel" aria-label="Guestbook messages">
+            <div class="guestbook-feed-head">
+              <span>Live Messages</span>
+              <strong id="guestbook-count">0</strong>
+            </div>
+            <div class="guestbook-notes" id="guestbook-notes" aria-live="polite"></div>
+          </section>
         </div>
       </section>
     </main>
@@ -387,5 +565,6 @@
   </div>
 
   <script src="desktop-layout.js"></script>
+  <script type="module" src="desktop-guestbook-firebase.js"></script>
 </body>
 </html>
