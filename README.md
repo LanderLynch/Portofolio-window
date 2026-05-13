@@ -32,7 +32,16 @@ The active homepage is:
 
 The homepage is a Windows/macOS-style desktop portfolio. It contains draggable/resizable windows for About, Projects, Skills, Experience, Achievement, Certifications, Browser, and Guestbook. Project links are opened inside an in-page browser iframe window when possible.
 
-Important: the root `index.html` currently only loads `desktop-layout.js`. Older shared scripts such as `admin-panel.js`, `testimonials-guestbook.js`, `theme-controls.js`, and `zoom-controls.js` are still used by other pages or kept for prior site versions, but they are not loaded on the current desktop homepage unless added manually.
+Current homepage highlights:
+
+- premium frosted-glass About workspace inspired by a futuristic OS dashboard
+- scrollable latest-project cards inside the About window, currently showing 7 project previews
+- shared OS-style window controls for About, Portfolio Browser, and Guestbook
+- About-only cinematic close/minimize motion system with reduced-motion fallbacks
+- Firebase-backed desktop Guestbook window using Firestore live updates and anonymous Auth
+- local desktop Furina/Webmeji-style mascot behavior
+
+Important: the root `index.html` currently loads `desktop-layout.js` and `desktop-guestbook-firebase.js`. Older shared scripts such as `admin-panel.js`, `testimonials-guestbook.js`, `theme-controls.js`, and `zoom-controls.js` are still used by other pages or kept for prior site versions, but they are not loaded on the current desktop homepage unless added manually.
 
 ## Repository Map
 
@@ -40,9 +49,12 @@ Important: the root `index.html` currently only loads `desktop-layout.js`. Older
 .
 +-- index.html                         # Main desktop portfolio entry
 +-- desktop-layout.css                 # Main desktop UI styling
-+-- desktop-layout.js                  # Window system, browser tabs, explorer data, local guestbook, Furina desktop sprite
++-- desktop-layout.js                  # Window system, browser tabs, explorer data, window motion, Furina desktop sprite
++-- desktop-guestbook-firebase.js      # Firebase-backed Guestbook for the desktop homepage
 +-- certification.html                 # Certification archive page
 +-- changelog.html                     # Dated changelog page
++-- CODEX_SPEC.md                      # Codex-ready rebuild specification
++-- ARCHITECTURE_NOTES.md              # Architecture map and phased implementation notes
 +-- project/
 |   +-- pages/                         # Portfolio project detail pages
 |   +-- scripts/photography-archive.js # Photography archive data model
@@ -79,14 +91,50 @@ It handles:
 - browser tabs inside `#window-browser`
 - intercepting `.html` and external links and opening them in the portfolio browser
 - File Explorer-style project/certification/skill/photography preview data
-- local-only homepage guestbook stored in `localStorage`
+- About window dissolve/minimize motion helpers and reduced-motion fallbacks
 - animated Furina sprite that walks/climbs/sits around the desktop windows
 - the clock in the menu bar
+
+The desktop Firebase Guestbook is handled by `desktop-guestbook-firebase.js`. `desktop-layout.js` still contains an older localStorage fallback, but it intentionally skips the current Guestbook form because `index.html` marks it with `data-guestbook-source="firebase"`.
 
 The desktop explorer data is hardcoded in `portfolioData` inside `desktop-layout.js`. If you add a new project to the desktop explorer, update both:
 
 - the visible project card markup in `index.html`
 - the related `portfolioData.projects.folders` entry in `desktop-layout.js`
+
+The About window also has its own latest-project preview cards in `index.html` under `.about-project-scroll`. Keep that list in sync with important project additions if the About window should stay current.
+
+### About Workspace
+
+The current About window is the visual foundation for the newer OS direction.
+
+Important pieces:
+
+- Markup: `#window-about` in `index.html`
+- Styling: About-specific glassmorphism, latest project cards, and motion clone styles in `desktop-layout.css`
+- Motion hooks: `dissolveWindow()`, `genieMinimizeWindow()`, `minimizeWindow()`, and `closeWindow()` in `desktop-layout.js`
+
+The right panel uses `.about-project-scroll` and contains 7 latest project cards:
+
+1. Personal GFX Design Collection
+2. Designer Bag on IKM
+3. Honkai: Star Rail E-Money
+4. Lariso Brand Identity
+5. Documentary Kota Tua UKK
+6. Logo Design Collection
+7. Marketing & Assistant HR
+
+Each card uses a real image preview and a status pill such as `Still Going` or `Completed`.
+
+### Window Controls
+
+The newer premium OS controls use SVG icons inside `.traffic` buttons:
+
+- `data-window-minimize`
+- `data-window-maximize`
+- `data-window-close`
+
+About, Portfolio Browser, and Guestbook currently use the newer three-button control set. Dynamically-created browser windows also use the same SVG controls from `createBrowserWindowElement()` in `desktop-layout.js`.
 
 ### Project Pages
 
@@ -256,7 +304,10 @@ Rules:
 
 #### `guestbookMessages`
 
-Used by `testimonials-guestbook.js`.
+Used by:
+
+- `desktop-guestbook-firebase.js` on the current desktop homepage
+- `testimonials-guestbook.js` on older/richer guestbook surfaces
 
 Expected fields:
 
@@ -264,9 +315,11 @@ Expected fields:
 {
   uid: string,
   displayName: string,
+  name: string,
   photoURL: string,
   avatarPosition: string,
-  provider: "author" | "google.com" | "guest-username" | string,
+  provider: "author" | "google.com" | "guest-username" | "desktop-anonymous" | string,
+  source: "desktop-window" | string,
   usernameKey: string,
   text: string,
   createdAt: serverTimestamp()
@@ -338,7 +391,16 @@ All other Storage paths are denied by default.
 1. Add a new card in `index.html` inside `.project-grid-archive`.
 2. Add or reuse preview assets under `project/assets/...`.
 3. Add the matching explorer folder entry in `portfolioData.projects.folders` inside `desktop-layout.js`.
-4. If it has a detail page, create it under `project/pages/` and link to it with a relative path like `project/pages/new-page.html`.
+4. If it should appear in the About workspace, add/update the corresponding `.project-preview-card` inside `.about-project-scroll`.
+5. If it has a detail page, create it under `project/pages/` and link to it with a relative path like `project/pages/new-page.html`.
+
+### Update The Desktop Guestbook
+
+1. Edit the Guestbook markup in `#window-guestbook` inside `index.html`.
+2. Keep `data-guestbook-source="firebase"` on `#guestbook-form` if the Firestore integration should stay active.
+3. Edit Firebase behavior in `desktop-guestbook-firebase.js`.
+4. Edit glassmorphism styling in the Guestbook section of `desktop-layout.css`.
+5. Keep Firestore writes compatible with `firestore.rules`: authenticated UID, `text` as a 1-400 character string, and public reads.
 
 ### Add A Project Detail Page
 
@@ -372,11 +434,14 @@ All other Storage paths are denied by default.
 ## Important Notes For The Next AI
 
 - Do not assume all old scripts are active on the current homepage. Check script tags first.
-- The current homepage guestbook is local-only in `desktop-layout.js`; the richer Firebase guestbook is in `testimonials-guestbook.js` and needs matching HTML to run.
+- The current homepage guestbook is Firebase-backed through `desktop-guestbook-firebase.js`.
+- `desktop-layout.js` still contains a local guestbook fallback for older markup, but the active homepage form opts into Firebase with `data-guestbook-source="firebase"`.
+- The richer legacy guestbook with profile/avatar upload behavior is still in `testimonials-guestbook.js` and needs matching HTML to run.
 - `admin-panel.js` depends on form and admin popout elements that are not present in the current `index.html`.
 - Project pages are mostly standalone, so changing shared CSS may not affect every page.
 - `language-controls.js` uses exact text replacement, so changing English copy can silently break translations until the text map is updated.
 - `desktop-layout.js` contains hardcoded portfolio data separate from the visible HTML cards.
+- The About latest-project cards are another separate visible list in `index.html`; keep them aligned manually with the project archive when needed.
 - The Firebase web config is safe to expose, but service account keys are not.
 - There are many large binary assets in `project/assets/`; avoid renaming or moving them unless you update every reference.
 - Some text in older files may contain mojibake characters from encoding issues. Preserve behavior first, then clean encoding only when specifically working on that file.
@@ -402,7 +467,10 @@ Before handing off a change, open these pages through a local server:
 Check:
 
 - desktop windows open, focus, drag, resize, close, and maximize
+- About, Browser, and Guestbook show the three matching SVG controls
+- About latest-project cards scroll and link to the correct project pages
 - project links open in the portfolio browser
+- Guestbook connects to Firebase, loads messages, and can submit a note through anonymous Auth
 - mobile layout does not overflow
 - theme switching still persists across pages
 - language switching still updates visible text

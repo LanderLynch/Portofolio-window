@@ -3,6 +3,9 @@
   const desktopStage = document.querySelector(".desktop-stage");
   const triggers = Array.from(document.querySelectorAll("[data-window-target]"));
   const clock = document.getElementById("desktop-clock");
+  const languageToggle = document.getElementById("desktop-language-toggle");
+  const themeToggle = document.getElementById("desktop-theme-toggle");
+  const aboutTitle = document.getElementById("about-title");
   const taskbarRecents = document.getElementById("taskbar-recents");
   const windowLabels = {
     about: "About",
@@ -10,7 +13,7 @@
     skills: "Skill tree",
     experience: "Experience",
     achievement: "Achievement",
-    certifications: "Certifications",
+    certifications: "Explorer",
     browser: "Browser",
     guestbook: "Guestbook"
   };
@@ -30,7 +33,8 @@
           tools: ["Photoshop", "Illustrator", "Photo Manipulation", "Typography"],
           date: "Still Going",
           type: "Personal Project",
-          href: "project/pages/personal-gfx-design-collection.html"
+          href: "project/pages/personal-gfx-design-collection.html",
+          thumbnail: "project/assets/preview-professional-gfx-design-suite.jpg"
         },
         {
           key: "ikm",
@@ -43,7 +47,8 @@
           tools: ["Photoshop", "Illustrator", "Canva"],
           date: "Agustus 2025",
           type: "Main Work",
-          href: "project/pages/ikm-design-creative-project.html"
+          href: "project/pages/ikm-design-creative-project.html",
+          thumbnail: "project/assets/ikm-project/2026/March/s26 totebag.jpeg"
         },
         {
           key: "marketing-hr",
@@ -56,7 +61,8 @@
           tools: ["Excel", "Marketing", "Advertisement", "Assistant HR"],
           date: "Sep - Nov 2022",
           type: "Training / PKL",
-          href: "project/pages/marketing-assistant-hr.html"
+          href: "project/pages/marketing-assistant-hr.html",
+          thumbnail: "project/assets/logo-preview/fortress-logo.jpg"
         },
         {
           key: "lariso",
@@ -69,7 +75,8 @@
           tools: ["Illustrator", "Photoshop", "Brand Identity"],
           date: "4 January 2026",
           type: "Client Work",
-          href: "project/pages/lariso-brand-identity.html"
+          href: "project/pages/lariso-brand-identity.html",
+          thumbnail: "project/assets/lariso-project/lariso mock up concept final banner.jpg"
         }
       ]
     },
@@ -232,10 +239,6 @@
     return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
   }
 
-  function sleep(duration) {
-    return new Promise((resolve) => window.setTimeout(resolve, duration));
-  }
-
   function animateElement(element, keyframes, options) {
     if (!element?.animate) {
       return Promise.resolve();
@@ -253,9 +256,17 @@
     element.querySelectorAll("[id]").forEach((child) => child.removeAttribute("id"));
   }
 
-  function createMotionWindowClone(windowElement, rect) {
+  function createMotionWindowClone(windowElement, rect, cloneClass = "") {
     const clone = windowElement.cloneNode(true);
     stripMotionCloneIds(clone);
+    clone.classList.add("window-static-clone");
+    if (windowElement.id === "window-about") {
+      clone.classList.add("about-genie-clone");
+    }
+    if (cloneClass) {
+      clone.classList.add(cloneClass);
+    }
+    clone.classList.remove("is-open", "is-focused", "is-closing", "is-dragging", "is-motion-hidden");
     clone.setAttribute("aria-hidden", "true");
     clone.style.width = `${rect.width}px`;
     clone.style.height = `${rect.height}px`;
@@ -265,10 +276,16 @@
     clone.style.maxHeight = "none";
     clone.style.left = "0";
     clone.style.top = "0";
+    clone.style.animation = "none";
+    clone.style.transition = "none";
+    clone.querySelectorAll("*").forEach((child) => {
+      child.style.animation = "none";
+      child.style.transition = "none";
+    });
     return clone;
   }
 
-  function createMotionLayer(windowElement, rect) {
+  function createMotionLayer(windowElement, rect, cloneClass = "") {
     const layer = document.createElement("div");
     layer.className = "window-motion-clone";
     layer.style.left = `${rect.left}px`;
@@ -276,88 +293,88 @@
     layer.style.width = `${rect.width}px`;
     layer.style.height = `${rect.height}px`;
     layer.style.borderRadius = getComputedStyle(windowElement).borderRadius;
-    layer.appendChild(createMotionWindowClone(windowElement, rect));
+    layer.appendChild(createMotionWindowClone(windowElement, rect, cloneClass));
     document.body.appendChild(layer);
     return layer;
-  }
-
-  async function dissolveWindow(windowElement) {
-    const rect = windowElement.getBoundingClientRect();
-
-    if (prefersReducedMotion()) {
-      const layer = createMotionLayer(windowElement, rect);
-      windowElement.classList.add("is-motion-hidden");
-      await animateElement(layer, [
-        { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
-        { opacity: 0, transform: "translate3d(0, 12px, 0) scale(0.97)" }
-      ], { duration: 180, easing: "ease-out", fill: "forwards" });
-      layer.remove();
-      return;
-    }
-
-    const rows = 5;
-    const columns = 7;
-    const fragments = [];
-    const radius = getComputedStyle(windowElement).borderRadius;
-
-    for (let row = 0; row < rows; row += 1) {
-      for (let column = 0; column < columns; column += 1) {
-        const x = (rect.width / columns) * column;
-        const y = (rect.height / rows) * row;
-        const width = Math.ceil(rect.width / columns) + 2;
-        const height = Math.ceil(rect.height / rows) + 2;
-        const fragment = document.createElement("div");
-        const viewport = document.createElement("div");
-
-        fragment.className = "window-dust-fragment";
-        fragment.style.left = `${rect.left + x}px`;
-        fragment.style.top = `${rect.top + y}px`;
-        fragment.style.width = `${width}px`;
-        fragment.style.height = `${height}px`;
-        fragment.style.borderRadius = radius;
-
-        viewport.style.position = "absolute";
-        viewport.style.left = `${-x}px`;
-        viewport.style.top = `${-y}px`;
-        viewport.style.width = `${rect.width}px`;
-        viewport.style.height = `${rect.height}px`;
-        viewport.appendChild(createMotionWindowClone(windowElement, rect));
-        fragment.appendChild(viewport);
-        document.body.appendChild(fragment);
-        fragments.push({ fragment, row, column });
-      }
-    }
-
-    windowElement.classList.add("is-motion-hidden");
-    await sleep(90);
-
-    const centerX = (columns - 1) / 2;
-    const centerY = (rows - 1) / 2;
-    await Promise.all(fragments.map(({ fragment, row, column }) => {
-      const driftX = (column - centerX) * 26 + (Math.random() - 0.5) * 42;
-      const driftY = -26 + (row - centerY) * 18 + Math.random() * 54;
-      const rotate = (Math.random() - 0.5) * 8;
-      const delay = Math.random() * 210 + row * 24 + column * 10;
-
-      return animateElement(fragment, [
-        { opacity: 1, transform: "translate3d(0, 0, 0) rotate(0deg) scale(1)", filter: "blur(0)" },
-        { opacity: 0.88, offset: 0.28, filter: "blur(1.5px)" },
-        { opacity: 0, transform: `translate3d(${driftX}px, ${driftY}px, 0) rotate(${rotate}deg) scale(0.82)`, filter: "blur(7px)" }
-      ], {
-        duration: 1100 + Math.random() * 360,
-        delay,
-        easing: "cubic-bezier(0.16, 0.74, 0.24, 1)",
-        fill: "forwards"
-      });
-    }));
-
-    fragments.forEach(({ fragment }) => fragment.remove());
   }
 
   function getMinimizeTarget(name) {
     return taskbarRecents?.querySelector(`[data-taskbar-window="${name}"]`) ||
       document.querySelector(`[data-window-target="${name}"]`) ||
       document.querySelector(".dock");
+  }
+
+  function getCloseTarget(name, rect) {
+    return taskbarRecents?.querySelector(`[data-taskbar-window="${name}"]`) ||
+      document.querySelector(`.dock [data-window-target="${name}"]`) ||
+      document.querySelector(".dock") ||
+      {
+        getBoundingClientRect: () => ({
+          left: rect.left + rect.width * 0.5 - 24,
+          top: window.innerHeight - 58,
+          width: 48,
+          height: 36
+        })
+      };
+  }
+
+  async function closeAboutWithGenie(windowElement) {
+    const rect = windowElement.getBoundingClientRect();
+    const targetRect = getCloseTarget("about", rect).getBoundingClientRect();
+    const layer = createMotionLayer(windowElement, rect, "genie-close-clone");
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+    const dx = targetCenterX - rect.left - rect.width * 0.5;
+    const dy = targetCenterY - rect.top - rect.height * 0.5;
+    const scaleX = Math.max(0.055, Math.min(0.14, targetRect.width / rect.width));
+    const scaleY = Math.max(0.045, Math.min(0.12, targetRect.height / rect.height));
+    const skew = targetCenterX < rect.left + rect.width / 2 ? 5 : -5;
+
+    layer.classList.add("is-genie-closing");
+    layer.style.transformOrigin = `${Math.max(12, Math.min(88, ((targetCenterX - rect.left) / rect.width) * 100))}% 100%`;
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    windowElement.classList.add("is-motion-hidden");
+
+    if (prefersReducedMotion()) {
+      await animateElement(layer, [
+        { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
+        { opacity: 0, transform: "translate3d(0, 10px, 0) scale(0.96)" }
+      ], { duration: 220, easing: "ease-out", fill: "forwards" });
+      layer.remove();
+      return;
+    }
+
+    await animateElement(layer, [
+      {
+        opacity: 1,
+        transform: "translate3d(0, 0, 0) scale(1, 1) skewY(0deg)",
+        clipPath: "inset(0 0 0 0 round 26px)"
+      },
+      {
+        opacity: 0.98,
+        offset: 0.38,
+        transform: `translate3d(${dx * 0.1}px, ${dy * 0.06}px, 0) scale(0.92, 0.86) skewY(${skew * 0.22}deg)`,
+        clipPath: "inset(3% 7% 0 7% round 28px)"
+      },
+      {
+        opacity: 0.72,
+        offset: 0.74,
+        transform: `translate3d(${dx * 0.62}px, ${dy * 0.72}px, 0) scale(0.34, 0.22) skewY(${skew * 0.78}deg)`,
+        clipPath: "inset(12% 30% 22% 30% round 20px)"
+      },
+      {
+        opacity: 0,
+        transform: `translate3d(${dx}px, ${dy}px, 0) scale(${scaleX}, ${scaleY}) skewY(${skew}deg)`,
+        clipPath: "inset(28% 45% 44% 45% round 14px)"
+      }
+    ], {
+      duration: 720,
+      easing: "cubic-bezier(0.18, 0.84, 0.22, 1)",
+      fill: "forwards"
+    });
+
+    layer.remove();
   }
 
   async function genieMinimizeWindow(windowElement, targetElement) {
@@ -529,8 +546,7 @@
 
     if (windowElement.dataset.window === "about" && windowElement.classList.contains("is-open")) {
       windowElement.dataset.motionState = "closing";
-      removeRecentWindow(windowElement.dataset.window);
-      dissolveWindow(windowElement).catch(() => {}).finally(() => finishWindowClose(windowElement));
+      closeAboutWithGenie(windowElement).catch(() => {}).finally(() => finishWindowClose(windowElement));
       return;
     }
 
@@ -1214,6 +1230,15 @@
     windowElement.querySelector(".window-titlebar")?.addEventListener("pointerdown", (event) => {
       startWindowDrag(event, windowElement);
     });
+    windowElement.querySelectorAll(".explorer-tabs, .browser-tabbar").forEach((dragRegion) => {
+      dragRegion.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button, a, input, textarea, .browser-tab")) {
+          return;
+        }
+
+        startWindowDrag(event, windowElement);
+      });
+    });
     windowElement.querySelectorAll("[data-resize-direction]").forEach((handle) => {
       handle.addEventListener("pointerdown", (event) => {
         startWindowResize(event, windowElement, handle.dataset.resizeDirection);
@@ -1367,146 +1392,690 @@
 
   function setupExplorerWindow() {
     const preview = document.getElementById("explorer-preview");
-    let activeInfo = null;
+    const files = document.getElementById("explorer-files");
+    const breadcrumb = document.getElementById("explorer-breadcrumb-current");
+    const search = document.getElementById("explorer-search-input");
+    const count = document.getElementById("explorer-status-count");
+    const tabTitle = document.getElementById("explorer-tab-title");
+    const shell = document.querySelector(".explorer-shell");
+    const recentKey = "jona-portfolio-explorer-recents";
+    const sortKey = "portfolio-explorer-sort";
+    const viewKey = "portfolio-explorer-view";
+    const history = [];
+    const sortOptions = {
+      name: "Name",
+      newest: "Date modified / Newest",
+      type: "Type"
+    };
+    const viewOptions = {
+      details: "Details",
+      list: "List",
+      icons: "Large icons"
+    };
+    let historyIndex = -1;
+    let activeLocation = "home";
+    let activeItem = null;
+    let loadingTimer = null;
+    let sortMode = localStorage.getItem(sortKey) || "name";
+    let viewMode = localStorage.getItem(viewKey) || "details";
+    let explorerMenu = null;
 
-    if (!preview) {
+    if (!preview || !files || !shell) {
       return;
     }
 
-    function normalizeExplorerChrome() {
-      const navLabels = ["<", ">", "^", "R"];
-      document.querySelectorAll(".explorer-nav-buttons button").forEach((button, index) => {
-        button.textContent = navLabels[index] || button.textContent;
-      });
+    if (!sortOptions[sortMode]) {
+      sortMode = "name";
+    }
 
-      const ribbonLabels = ["+", "X", "C", "P", "A", "D", "S", "O", "V", "..."];
-      document.querySelectorAll(".explorer-ribbon button span").forEach((icon, index) => {
-        icon.textContent = ribbonLabels[index] || icon.textContent;
-      });
+    if (!viewOptions[viewMode]) {
+      viewMode = "details";
+    }
 
-      const viewLabels = ["=", "[]"];
-      document.querySelectorAll(".explorer-view-switcher button").forEach((button, index) => {
-        button.textContent = viewLabels[index] || button.textContent;
+    const projectItems = [
+      ...portfolioData.projects.folders,
+      {
+        key: "honkai-e-money",
+        label: "Honkai E-Money",
+        logo: "EM",
+        organization: "Client Work",
+        title: "Honkai: Star Rail E-Money Transit Series",
+        status: "Completed",
+        description: "A custom public transit card series translating Honkai: Star Rail character energy into collectible daily-use merchandise.",
+        tools: ["Illustrator", "Photoshop", "Print Design"],
+        date: "2 February 2026",
+        type: "Client Work",
+        href: "project/pages/honkai-star-rail-e-money-transit-series.html",
+        thumbnail: "project/assets/E-Money card Design Honkai star rail/Preview depan E-money HSR.jpg"
+      },
+      {
+        key: "documentary-kota-tua",
+        label: "Kota Tua UKK",
+        logo: "KT",
+        organization: "School Project",
+        title: "Documentary Kota Tua UKK",
+        status: "In Progress",
+        description: "School project documentation created in Kota Tua for a UKK assignment with visual storytelling and supporting design assets.",
+        tools: ["Premiere Pro", "Photoshop", "Documentary"],
+        date: "UKK Project",
+        type: "School Work",
+        href: "project/pages/documentary-kota-tua-ukk.html",
+        thumbnail: "project/assets/logo-preview/yuppentek-logo-kota-tua-version-banner.jpg"
+      },
+      {
+        key: "logo-collection",
+        label: "Logo Collection",
+        logo: "LG",
+        organization: "Brand Identity",
+        title: "Logo Design Collection",
+        status: "Completed",
+        description: "A collection of logo studies and brand identity explorations for varied client and presentation contexts.",
+        tools: ["Illustrator", "Branding", "Logo Design"],
+        date: "6 Months",
+        type: "Design Archive",
+        href: "project/pages/logo-design-collection.html",
+        thumbnail: "project/assets/logo-preview/Folder UI Design.jpg"
+      }
+    ].filter((item, index, list) => list.findIndex((entry) => entry.href === item.href) === index);
+
+    const archiveSources = Array.isArray(window.photographyArchive) ? window.photographyArchive : [];
+    const photoItems = archiveSources.flatMap((archive) => {
+      const images = Array.isArray(archive.images) ? archive.images : [];
+      return images.map((imageUrl, index) => {
+        const filename = decodeURIComponent(String(imageUrl).split("/").pop()?.split("?")[0] || `${archive.slug}-${index + 1}`);
+        return {
+          id: `${archive.slug}-${index}`,
+          key: `${archive.slug}-${index}`,
+          label: filename,
+          title: filename,
+          itemType: "photo",
+          kind: "image",
+          description: archive.description || "Photography Archive image preview.",
+          date: archive.dateLabel || String(archive.year || ""),
+          dateSort: archive.year || parseItemDate({ date: archive.dateLabel }),
+          href: imageUrl,
+          thumbnail: imageUrl,
+          archiveTitle: archive.title,
+          organization: archive.location || archive.projectType || "Photography Archive",
+          typeLabel: "Image file"
+        };
       });
+    }).sort((a, b) => (b.dateSort || 0) - (a.dateSort || 0));
+
+    const quickAccess = [
+      { id: "quick-projects", label: "Projects", title: "Projects", itemType: "folder", kind: "folder", openLocation: "projects", description: "Portfolio project folders and case studies.", count: projectItems.length, typeLabel: "File folder" },
+      { id: "quick-certifications", label: "Certifications", title: "Certifications", itemType: "folder", kind: "folder", openLocation: "certifications", description: "PDF-style certification and achievement records.", count: portfolioData.certifications.folders.length, typeLabel: "File folder" },
+      { id: "quick-photography", label: "Photography Archive", title: "Photography Archive", itemType: "folder", kind: "folder", openLocation: "photography", description: "Photography archive grouped from newest to oldest.", count: photoItems.length, typeLabel: "File folder" },
+      { id: "quick-skills", label: "Skills", title: "Skills", itemType: "folder", kind: "folder", openLocation: "skills", description: "Creative skill areas and production systems.", count: portfolioData.skills.folders.length, typeLabel: "File folder" }
+    ];
+
+    const locations = {
+      home: { label: "Home", search: "Search Home" },
+      gallery: { label: "Gallery", search: "Search Gallery" },
+      projects: { label: "Projects", search: "Search Projects" },
+      certifications: { label: "Certifications", search: "Search Certifications" },
+      photography: { label: "Photography Archive", search: "Search Photography Archive" },
+      skills: { label: "Skills", search: "Search Skills" },
+      experience: { label: "Experience", search: "Search Experience" },
+      contact: { label: "Contact", search: "Search Contact" }
+    };
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function normalizeDataItem(item, itemType = "project") {
+      return {
+        id: item.key,
+        label: item.label || item.title,
+        title: item.title || item.label,
+        itemType,
+        kind: itemType === "certification" ? "pdf" : itemType,
+        organization: item.organization,
+        status: item.status,
+        description: item.description,
+        tools: item.tools || [],
+        date: item.date,
+        href: item.href,
+        thumbnail: item.thumbnail,
+        typeLabel: itemType === "certification" ? "PDF document" : item.type || "Portfolio item"
+      };
+    }
+
+    function getRecentItems() {
+      try {
+        return JSON.parse(localStorage.getItem(recentKey) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveRecentItem(item) {
+      if (!item || item.itemType === "folder") {
+        return;
+      }
+
+      const recent = getRecentItems().filter((entry) => entry.id !== item.id);
+      const stored = {
+        id: item.id,
+        label: item.label,
+        title: item.title,
+        itemType: item.itemType,
+        kind: item.kind,
+        description: item.description,
+        date: item.date,
+        href: item.href,
+        thumbnail: item.thumbnail,
+        typeLabel: item.typeLabel
+      };
+      localStorage.setItem(recentKey, JSON.stringify([stored, ...recent].slice(0, 10)));
+    }
+
+    function parseItemDate(item) {
+      const rawDate = String(item.date || "").trim();
+      const liveDate = `${rawDate} ${item.status || ""}`.toLowerCase();
+      if (/(ongoing|on-going|current|present|still)/.test(liveDate)) {
+        return Date.parse("1 January 2100");
+      }
+      const monthNames = {
+        januari: "January",
+        februari: "February",
+        maret: "March",
+        april: "April",
+        mei: "May",
+        juni: "June",
+        juli: "July",
+        agustus: "August",
+        september: "September",
+        oktober: "October",
+        november: "November",
+        desember: "December"
+      };
+      const normalized = rawDate.replace(/\b(januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember)\b/gi, (month) => monthNames[month.toLowerCase()] || month);
+      const yearMatch = normalized.match(/\b(20\d{2}|19\d{2})\b/);
+      const parsed = Date.parse(normalized);
+
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+
+      if (yearMatch) {
+        return Date.parse(`1 January ${yearMatch[0]}`);
+      }
+
+      return 0;
+    }
+
+    function getTypeRank(item) {
+      if (item.itemType === "folder") return 0;
+      if (item.itemType === "project") return 1;
+      if (item.itemType === "certification") return 2;
+      if (item.itemType === "photo") return 3;
+      if (item.itemType === "contact") return 4;
+      return 5;
+    }
+
+    function sortItems(items) {
+      return items
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => {
+          if (sortMode === "newest") {
+            const dateDiff = parseItemDate(b.item) - parseItemDate(a.item);
+            if (dateDiff) return dateDiff;
+          }
+
+          if (sortMode === "type") {
+            const typeDiff = getTypeRank(a.item) - getTypeRank(b.item);
+            if (typeDiff) return typeDiff;
+          }
+
+          const nameDiff = String(a.item.label || a.item.title || "").localeCompare(String(b.item.label || b.item.title || ""), undefined, { sensitivity: "base" });
+          return nameDiff || a.index - b.index;
+        })
+        .map(({ item }) => item);
+    }
+
+    function applyExplorerPreferences(groups) {
+      return groups.map((group) => ({
+        ...group,
+        items: sortItems(group.items)
+      }));
+    }
+
+    function getItemsForLocation(location) {
+      if (location === "home") {
+        return [
+          { group: "Quick Access", items: quickAccess },
+          { group: "Recent", items: getRecentItems() }
+        ];
+      }
+
+      if (location === "gallery") {
+        return [{
+          group: "Photography Archive",
+          items: [{ id: "gallery-photography", label: "Photography Archive", title: "Photography Archive", itemType: "folder", kind: "folder", openLocation: "photography", description: "Open the full image archive sorted newest to oldest.", count: photoItems.length, typeLabel: "File folder" }]
+        }];
+      }
+
+      if (location === "projects") {
+        return [{ group: "Projects", items: projectItems.map((item) => normalizeDataItem(item, "project")) }];
+      }
+
+      if (location === "certifications") {
+        return [{ group: "Certifications", items: portfolioData.certifications.folders.map((item) => normalizeDataItem(item, "certification")) }];
+      }
+
+      if (location === "photography") {
+        return [{ group: "Newest to oldest", items: photoItems }];
+      }
+
+      if (location === "skills") {
+        return [{ group: "Skills", items: portfolioData.skills.folders.map((item) => normalizeDataItem(item, "skill")) }];
+      }
+
+      if (location === "experience") {
+        return [{
+          group: "Experience",
+          items: [
+            { id: "ikm-experience", label: "Design Creative - IKM", title: "Design Creative - PT Internusa Kreasindo Mandiri", itemType: "experience", kind: "document", description: "Producing social media visuals, product mockups, company presentation graphics, marketing layouts, and branded design assets from concept to delivery.", date: "2025 Aug - Present", openWindow: "experience", thumbnail: "project/assets/ikm-project/2026/March/s26 totebag.jpeg", typeLabel: "Experience file" },
+            { id: "freelance-experience", label: "Freelance Designer & Photographer", title: "Freelance Graphic Designer & Photographer", itemType: "experience", kind: "document", description: "Handling poster design, banners, GFX visuals, event documentation, portrait sessions, and curated web project pages for personal and client-facing archives.", date: "2023 - Present", openWindow: "experience", thumbnail: "project/assets/kota-tua/cosplayer-1.jpg", typeLabel: "Experience file" },
+            { id: "aryaduta-experience", label: "Sport Desk Staff", title: "Sport Desk Staff - Hotel Aryaduta Country Club", itemType: "experience", kind: "document", description: "Supported guest service, day-to-day reporting, sport facility operations, and promotion support while building stronger communication and service workflow habits.", date: "Jul - Oct 2024", openWindow: "experience", thumbnail: "project/assets/certification-files/certification-trainee/aryaduta-trainee-website-certification.jpg", typeLabel: "Experience file" }
+          ]
+        }];
+      }
+
+      if (location === "contact") {
+        return [{
+          group: "Contact",
+          items: [
+            { id: "email-contact", label: "Email Jona", title: "Email Jona Setiawan", itemType: "contact", kind: "document", description: "Open an email draft to contact Jona.", href: "mailto:jonasaevuddyinsetiawan@gmail.com", typeLabel: "Contact shortcut" },
+            { id: "instagram-contact", label: "Instagram", title: "Instagram", itemType: "contact", kind: "document", description: "Open Instagram profile.", href: "https://www.instagram.com/jona.mmzv/", typeLabel: "Web shortcut" },
+            { id: "linkedin-contact", label: "LinkedIn", title: "LinkedIn", itemType: "contact", kind: "document", description: "Open LinkedIn profile.", href: "https://www.linkedin.com/in/jona-setiawan-099149311/", typeLabel: "Web shortcut" }
+          ]
+        }];
+      }
+
+      return [];
     }
 
     function renderPassivePreview() {
       preview.innerHTML = `
         <div class="explorer-preview-empty">
           <span class="explorer-preview-empty-icon"></span>
-          <p>Select a folder to preview.</p>
+          <p>Select an item to preview.</p>
         </div>
       `;
     }
 
-    function renderDetailCard(info) {
-      activeInfo = info;
-      const pills = info.tools.map((tool) => `<span>${tool}</span>`).join("");
+    function getIconClass(item) {
+      if (item.itemType === "folder") return "explorer-file-folder";
+      if (item.itemType === "certification") return "explorer-file-pdf";
+      if (item.itemType === "photo") return "explorer-file-photo";
+      if (item.itemType === "skill") return "explorer-file-code";
+      if (item.itemType === "contact") return "explorer-file-contact";
+      return "explorer-file-document";
+    }
+
+    function renderPreview(item) {
+      activeItem = item;
+      const tags = (item.tools || []).map((tool) => `<span>${escapeHtml(tool)}</span>`).join("");
+      const thumbnail = item.thumbnail ? `<img class="explorer-preview-image" src="${escapeHtml(item.thumbnail)}" alt="">` : "";
+      const countText = item.itemType === "folder" ? `<p>${item.count || 0} items</p>` : "";
+      const hint = item.href || item.openWindow || item.openLocation ? "Double-click to open" : "Preview only";
+
       preview.innerHTML = `
         <article class="explorer-detail-card">
-          <div class="explorer-detail-logo">${info.logo}</div>
-          <p class="explorer-detail-org">${info.organization}</p>
+          ${thumbnail || `<div class="explorer-preview-large-icon ${getIconClass(item)}"></div>`}
+          <p class="explorer-detail-org">${escapeHtml(item.organization || item.typeLabel || item.itemType)}</p>
           <div class="explorer-detail-title-row">
-            <h3>${info.title}</h3>
-            <span class="explorer-detail-status">${info.status}</span>
+            <h3>${escapeHtml(item.title || item.label)}</h3>
+            ${item.status ? `<span class="explorer-detail-status">${escapeHtml(item.status)}</span>` : ""}
           </div>
-          <p>${info.description}</p>
-          <div class="explorer-detail-pills">${pills}</div>
+          ${countText}
+          <p>${escapeHtml(item.description || "Portfolio item ready to preview.")}</p>
+          ${tags ? `<div class="explorer-detail-pills">${tags}</div>` : ""}
           <div class="explorer-detail-meta">
-            <span>${info.date}</span>
-            <span>${info.type}</span>
+            <span>${escapeHtml(item.date || locations[activeLocation]?.label || "")}</span>
+            <span>${escapeHtml(item.typeLabel || item.itemType || "")}</span>
           </div>
-          <button class="explorer-detail-cta" type="button">View Full Project -></button>
+          <small>${hint}</small>
         </article>
       `;
-
-      preview.querySelector(".explorer-detail-cta")?.addEventListener("click", () => {
-        if (info.href) {
-          openBrowserTab(info.href, info.title);
-        }
-      });
     }
 
-    function selectItem(item, info) {
-      document.querySelectorAll(".explorer-item").forEach((entry) => entry.classList.remove("is-selected"));
-      item.classList.add("is-selected");
-
-      if (info) {
-        renderDetailCard(info);
-      }
-    }
-
-    window.renderExplorerGrid = function renderExplorerGrid(context) {
-      const grid = document.getElementById("explorer-files");
-      const breadcrumb = document.getElementById("explorer-breadcrumb-current");
-      const search = document.getElementById("explorer-search-input");
-      const count = document.getElementById("explorer-status-count");
-      const tab = document.querySelector(".explorer-tab.is-active");
-      const category = portfolioData[context] || portfolioData.certifications;
-
-      if (!grid || !category) {
+    function updateStatus(itemCount, item = null) {
+      if (!count) {
         return;
       }
 
-      grid.replaceChildren();
-      activeInfo = null;
+      const selected = item ? `1 item selected | ${item.typeLabel || item.itemType}` : "0 items selected";
+      count.textContent = `${itemCount} item${itemCount === 1 ? "" : "s"} | ${selected}`;
+    }
 
-      if (breadcrumb) {
-        breadcrumb.textContent = category.label;
+    function selectItem(itemElement, item, itemCount) {
+      document.querySelectorAll(".explorer-item").forEach((entry) => entry.classList.remove("is-selected"));
+      itemElement.classList.add("is-selected");
+      renderPreview(item);
+      updateStatus(itemCount, item);
+    }
+
+    function openExplorerItem(item) {
+      if (!item) {
+        return;
       }
 
-      if (tab) {
-        tab.textContent = category.label;
+      if (item.openLocation) {
+        navigateExplorer(item.openLocation);
+        return;
+      }
+
+      saveRecentItem(item);
+
+      if (item.openWindow) {
+        openWindow(item.openWindow);
+        return;
+      }
+
+      if (!item.href) {
+        return;
+      }
+
+      if (item.href.startsWith("mailto:")) {
+        window.location.href = item.href;
+        return;
+      }
+
+      openBrowserTab(item.href, item.title || item.label);
+    }
+
+    function filterGroups(groups) {
+      const term = (search?.value || "").trim().toLowerCase();
+      if (!term) {
+        return groups;
+      }
+
+      return groups
+        .map((group) => ({
+          ...group,
+          items: group.items.filter((item) => {
+            return [item.label, item.title, item.description, item.typeLabel]
+              .filter(Boolean)
+              .some((value) => String(value).toLowerCase().includes(term));
+          })
+        }))
+        .filter((group) => group.items.length);
+    }
+
+    function renderLoading() {
+      files.innerHTML = `
+        <div class="explorer-loading">
+          <span></span>
+          <p>Loading items...</p>
+        </div>
+      `;
+    }
+
+    function syncExplorerControls() {
+      shell.dataset.explorerView = viewMode;
+      document.querySelectorAll("[data-explorer-menu-trigger]").forEach((button) => {
+        const kind = button.dataset.explorerMenuTrigger;
+        const activeLabel = kind === "sort" ? sortOptions[sortMode] : viewOptions[viewMode];
+        button.setAttribute("aria-haspopup", "menu");
+        button.setAttribute("aria-expanded", "false");
+        button.title = activeLabel || "";
+      });
+    }
+
+    function renderItems(location) {
+      const groups = applyExplorerPreferences(filterGroups(getItemsForLocation(location)));
+      const itemCount = groups.reduce((total, group) => total + group.items.length, 0);
+      const selectedId = activeItem?.id;
+      let selectedRow = null;
+      let selectedItem = null;
+      files.replaceChildren();
+      files.classList.remove("is-loading");
+      files.dataset.explorerLocation = location;
+      files.dataset.explorerView = location === "photography" ? "gallery" : viewMode;
+
+      if (!itemCount) {
+        files.innerHTML = `<div class="explorer-empty-state">No items match this location.</div>`;
+        updateStatus(0);
+        renderPassivePreview();
+        return;
+      }
+
+      if (viewMode === "details") {
+        const columns = document.createElement("div");
+        columns.className = "explorer-column-header";
+        columns.innerHTML = `
+          <span>Name</span>
+          <span>Date modified</span>
+          <span>Type</span>
+          <span>Status</span>
+        `;
+        files.appendChild(columns);
+      }
+
+      groups.forEach((group) => {
+        const section = document.createElement("section");
+        section.className = "explorer-file-group";
+        section.innerHTML = `<h3>${escapeHtml(group.group)}</h3>`;
+
+        const list = document.createElement("div");
+        list.className = "explorer-file-list";
+
+        if (!group.items.length) {
+          list.innerHTML = `<p class="explorer-file-empty">No recent items yet.</p>`;
+          section.appendChild(list);
+          files.appendChild(section);
+          return;
+        }
+
+        group.items.forEach((item, index) => {
+          const row = document.createElement("button");
+          row.type = "button";
+          row.className = "explorer-item";
+          row.style.setProperty("--reveal-delay", `${Math.min(index, 8) * 28}ms`);
+          row.innerHTML = `
+            <span class="explorer-item-icon ${getIconClass(item)}">${item.itemType === "photo" && item.thumbnail ? `<img src="${escapeHtml(item.thumbnail)}" alt="">` : ""}</span>
+            <span class="explorer-item-main">
+              <strong>${escapeHtml(item.label || item.title)}</strong>
+              <small>${escapeHtml(item.description || item.typeLabel || "")}</small>
+            </span>
+            <span class="explorer-item-date">${escapeHtml(item.date || "")}</span>
+            <span class="explorer-item-kind">${escapeHtml(item.typeLabel || item.itemType || "")}</span>
+            <span class="explorer-item-status">${escapeHtml(item.status || "")}</span>
+          `;
+          row.addEventListener("click", () => selectItem(row, item, itemCount));
+          row.addEventListener("dblclick", () => openExplorerItem(item));
+          if (item.id === selectedId) {
+            selectedRow = row;
+            selectedItem = item;
+          }
+          list.appendChild(row);
+        });
+
+        section.appendChild(list);
+        files.appendChild(section);
+      });
+
+      if (selectedRow && selectedItem) {
+        selectItem(selectedRow, selectedItem, itemCount);
+      } else {
+        updateStatus(itemCount);
+        renderPassivePreview();
+      }
+    }
+
+    function setExplorerChrome(location) {
+      const locationInfo = locations[location] || locations.home;
+      shell.dataset.explorerLocation = location;
+
+      if (breadcrumb) {
+        breadcrumb.textContent = locationInfo.label;
+      }
+
+      if (tabTitle) {
+        tabTitle.textContent = locationInfo.label === "Home" ? "Explorer" : locationInfo.label;
       }
 
       if (search) {
-        search.placeholder = `Search ${category.label}`;
-        search.value = "";
+        search.placeholder = locationInfo.search;
       }
 
-      if (count) {
-        const itemCount = category.folders.length;
-        count.textContent = `${itemCount} item${itemCount === 1 ? "" : "s"}`;
+      document.querySelectorAll("[data-sidebar-root]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.sidebarRoot === location);
+      });
+      syncExplorerControls();
+    }
+
+    function closeExplorerMenu() {
+      if (!explorerMenu) {
+        return;
       }
 
-      category.folders.forEach((folder) => {
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "explorer-item";
-        item.dataset.folderKey = folder.key;
-        item.innerHTML = `
-          <span class="explorer-folder-icon"></span>
-          <strong>${folder.label}</strong>
-        `;
-        item.addEventListener("click", () => selectItem(item, folder));
-        item.addEventListener("dblclick", () => {
-          selectItem(item, folder);
-          if (folder.href) {
-            openBrowserTab(folder.href, folder.title);
-          }
-        });
-        grid.appendChild(item);
+      document.querySelectorAll("[data-explorer-menu-trigger]").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+      });
+      explorerMenu.remove();
+      explorerMenu = null;
+    }
+
+    function setSortMode(mode) {
+      if (!sortOptions[mode]) {
+        return;
+      }
+
+      sortMode = mode;
+      localStorage.setItem(sortKey, sortMode);
+      syncExplorerControls();
+      renderItems(activeLocation);
+    }
+
+    function setViewMode(mode) {
+      if (!viewOptions[mode]) {
+        return;
+      }
+
+      viewMode = mode;
+      localStorage.setItem(viewKey, viewMode);
+      syncExplorerControls();
+      renderItems(activeLocation);
+    }
+
+    function openExplorerMenu(kind, trigger) {
+      const options = kind === "sort" ? sortOptions : viewOptions;
+      const activeMode = kind === "sort" ? sortMode : viewMode;
+      const rect = trigger.getBoundingClientRect();
+      closeExplorerMenu();
+
+      explorerMenu = document.createElement("div");
+      explorerMenu.className = "explorer-toolbar-menu";
+      explorerMenu.dataset.menuKind = kind;
+      explorerMenu.setAttribute("role", "menu");
+      explorerMenu.style.left = `${Math.min(rect.left, window.innerWidth - 230)}px`;
+      explorerMenu.style.top = `${rect.bottom + 8}px`;
+      explorerMenu.innerHTML = Object.entries(options).map(([mode, label]) => `
+        <button type="button" role="menuitemradio" aria-checked="${mode === activeMode}" data-explorer-menu-option="${mode}" class="${mode === activeMode ? "is-active" : ""}">
+          <span class="explorer-menu-check" aria-hidden="true"></span>
+          <span>${escapeHtml(label)}</span>
+        </button>
+      `).join("");
+
+      explorerMenu.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-explorer-menu-option]");
+        if (!option) {
+          return;
+        }
+
+        if (kind === "sort") {
+          setSortMode(option.dataset.explorerMenuOption);
+        } else {
+          setViewMode(option.dataset.explorerMenuOption);
+        }
+
+        closeExplorerMenu();
       });
 
-      const firstItem = grid.querySelector(".explorer-item");
-      firstItem?.classList.add("is-selected");
-      renderPassivePreview();
+      document.body.appendChild(explorerMenu);
+      trigger.setAttribute("aria-expanded", "true");
+    }
+
+    function navigateExplorer(location, addToHistory = true) {
+      activeLocation = locations[location] ? location : "home";
+      activeItem = null;
+      if (addToHistory && search) {
+        search.value = "";
+      }
+      setExplorerChrome(activeLocation);
+      renderLoading();
+
+      if (addToHistory) {
+        history.splice(historyIndex + 1);
+        history.push(activeLocation);
+        historyIndex = history.length - 1;
+      }
+
+      window.clearTimeout(loadingTimer);
+      loadingTimer = window.setTimeout(() => renderItems(activeLocation), window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 140);
+    }
+
+    window.renderExplorerGrid = function renderExplorerGrid(context) {
+      navigateExplorer(locations[context] ? context : "home");
     };
 
-    normalizeExplorerChrome();
-    window.renderExplorerGrid("certifications");
-    renderPassivePreview();
+    search?.addEventListener("input", () => renderItems(activeLocation));
+    document.querySelector("[data-explorer-refresh]")?.addEventListener("click", () => navigateExplorer(activeLocation, false));
+    document.querySelector("[data-explorer-up]")?.addEventListener("click", () => navigateExplorer("home"));
+    document.querySelector("[data-explorer-preview-toggle]")?.addEventListener("click", () => {
+      shell.classList.toggle("is-preview-collapsed");
+    });
+    document.querySelectorAll("[data-explorer-menu-trigger]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const kind = button.dataset.explorerMenuTrigger;
+        if (explorerMenu?.dataset.menuKind === kind) {
+          closeExplorerMenu();
+          return;
+        }
+
+        openExplorerMenu(kind, button);
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!explorerMenu || explorerMenu.contains(event.target) || event.target.closest("[data-explorer-menu-trigger]")) {
+        return;
+      }
+
+      closeExplorerMenu();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeExplorerMenu();
+      }
+    });
+    document.querySelector("[data-explorer-back]")?.addEventListener("click", () => {
+      if (historyIndex <= 0) return;
+      historyIndex -= 1;
+      navigateExplorer(history[historyIndex], false);
+    });
+    document.querySelector("[data-explorer-forward]")?.addEventListener("click", () => {
+      if (historyIndex >= history.length - 1) return;
+      historyIndex += 1;
+      navigateExplorer(history[historyIndex], false);
+    });
+
+    syncExplorerControls();
+    navigateExplorer("home");
   }
 
   function updateExplorerSidebar(context) {
-    const rootButtons = document.querySelectorAll("[data-sidebar-root]");
-    const category = portfolioData[context] || portfolioData.certifications;
-
-    rootButtons.forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.sidebarRoot === context);
-    });
-
-    window.renderExplorerGrid?.(category ? context : "certifications");
+    window.renderExplorerGrid?.(context || "home");
   }
 
   function setupExplorerSidebarNavigation() {
@@ -1522,7 +2091,7 @@
       });
     });
 
-    updateExplorerSidebar("certifications");
+    updateExplorerSidebar("home");
   }
 
   function setupDesktopFurina() {
@@ -1534,29 +2103,40 @@
     }
 
     const size = 96;
+    const desktopScale = () => getDesktopScale();
     const sprites = {
-      idle: ["webmeji-main/Furina/shime1.png"],
-      walk: [
-        "webmeji-main/Furina/shime1.png",
-        "webmeji-main/Furina/shime2.png",
-        "webmeji-main/Furina/shime3.png",
-        "webmeji-main/Furina/shime2.png"
-      ],
-      climb: [
-        "webmeji-main/Furina/shime15.png",
-        "webmeji-main/Furina/shime16.png",
-        "webmeji-main/Furina/shime17.png"
-      ],
-      sit: ["webmeji-main/Furina/shime11.png", "webmeji-main/Furina/shime11v2.png"]
+      stand: ["webmeji-main/Furina/shime1.png", "webmeji-main/Furina/shime1.png", "webmeji-main/Furina/shime2.png"],
+      walk: ["webmeji-main/Furina/shime1.png", "webmeji-main/Furina/shime2.png", "webmeji-main/Furina/shime3.png", "webmeji-main/Furina/shime2.png"],
+      run: ["webmeji-main/Furina/shime4.png", "webmeji-main/Furina/shime5.png", "webmeji-main/Furina/shime6.png", "webmeji-main/Furina/shime5.png"],
+      sit: ["webmeji-main/Furina/shime11.png", "webmeji-main/Furina/shime11v2.png", "webmeji-main/Furina/shime11v3.png"],
+      sitFaceMouse: ["webmeji-main/Furina/shime12.png", "webmeji-main/Furina/shime13.png", "webmeji-main/Furina/shime14.png"],
+      spinHead: ["webmeji-main/Furina/shime20.png", "webmeji-main/Furina/shime20v2.png", "webmeji-main/Furina/shime20v3.png", "webmeji-main/Furina/shime20v4.png"],
+      dragged: ["webmeji-main/Furina/shime26.png", "webmeji-main/Furina/shime27.png"],
+      thrown: ["webmeji-main/Furina/shime28.png", "webmeji-main/Furina/shime29.png"],
+      fall: ["webmeji-main/Furina/shime30.png", "webmeji-main/Furina/shime31.png"],
+      bounce: ["webmeji-main/Furina/shime32.png", "webmeji-main/Furina/shime33.png"],
+      recover: ["webmeji-main/Furina/shime34.png", "webmeji-main/Furina/shime35.png"],
+      climbWall: ["webmeji-main/Furina/shime15.png", "webmeji-main/Furina/shime16.png", "webmeji-main/Furina/shime17.png"]
     };
     const state = {
       x: 420,
-      y: 520,
+      y: 0,
+      vx: 1.2,
+      vy: 0,
       mode: "walk",
       frame: 0,
-      targetWindow: null,
-      sitUntil: 0,
-      side: "left"
+      lastFrameAt: 0,
+      nextDecisionAt: 0,
+      modeUntil: 0,
+      targetX: 720,
+      dragging: false,
+      dragPointerId: null,
+      dragOffsetX: 0,
+      dragOffsetY: 0,
+      lastPointerX: 0,
+      lastPointerY: 0,
+      lastPointerAt: 0,
+      mouseX: 0
     };
 
     function getFloorY() {
@@ -1564,135 +2144,191 @@
       return Math.max(70, bounds.height - 158);
     }
 
-    function getOpenWindows() {
-      return windows
-        .filter((windowElement) => {
-          return windowElement.classList.contains("is-open") && !windowElement.classList.contains("is-closing");
-        })
-        .sort((a, b) => (Number.parseInt(b.style.zIndex || "0", 10) || 0) - (Number.parseInt(a.style.zIndex || "0", 10) || 0));
-    }
-
-    function chooseTargetWindow() {
-      const openWindows = getOpenWindows();
-      const focusedWindow = openWindows.find((windowElement) => windowElement.classList.contains("is-focused"));
-      return focusedWindow || openWindows[0] || null;
-    }
-
-    function getWindowTarget(windowElement) {
+    function clampPosition() {
       const bounds = getViewportBounds();
-      const left = windowElement.offsetLeft;
-      const top = windowElement.offsetTop;
-      const width = windowElement.offsetWidth;
-      const side = state.side;
-      const sideX = side === "left" ? left + 20 : left + width - size - 20;
-      const sitX = Math.min(Math.max(left + width / 2 - size / 2, 10), bounds.width - size - 10);
-      const sitY = Math.max(42, top - size + 8);
-
-      return {
-        sideX,
-        sitX,
-        sitY,
-        zIndex: Number.parseInt(windowElement.style.zIndex || "100", 10) || 100
-      };
+      state.x = Math.min(Math.max(state.x, 8), bounds.width - size - 8);
+      state.y = Math.min(Math.max(state.y, 42), getFloorY());
     }
 
-    function setMode(mode) {
+    function setMode(mode, duration = 2600) {
       if (state.mode === mode) {
         return;
       }
 
       state.mode = mode;
       state.frame = 0;
-      furina.classList.toggle("is-climbing", mode === "climb");
-      furina.classList.toggle("is-sitting", mode === "sit");
+      state.modeUntil = performance.now() + duration;
+      furina.classList.toggle("is-climbing", mode === "climbWall");
+      furina.classList.toggle("is-sitting", mode === "sit" || mode === "sitFaceMouse" || mode === "spinHead");
+      furina.classList.toggle("is-dragged", mode === "dragged" || mode === "thrown" || mode === "fall");
     }
 
-    function setSprite() {
-      const frames = sprites[state.mode] || sprites.idle;
+    function setSprite(now) {
+      const frameDuration = state.mode === "run" ? 110 : state.mode === "walk" ? 170 : 240;
+      if (now - state.lastFrameAt < frameDuration) return;
+      const frames = sprites[state.mode] || sprites.stand;
       image.src = frames[state.frame % frames.length];
       state.frame += 1;
+      state.lastFrameAt = now;
     }
 
     function render() {
-      const bounds = getViewportBounds();
-      state.x = Math.min(Math.max(state.x, 8), bounds.width - size - 8);
-      state.y = Math.min(Math.max(state.y, 42), bounds.height - size - 86);
+      clampPosition();
       furina.style.left = `${state.x}px`;
       furina.style.top = `${state.y}px`;
     }
 
-    function tick() {
-      const now = Date.now();
+    function chooseNextState(now) {
       const bounds = getViewportBounds();
+      const roll = Math.random() * 100;
+      state.nextDecisionAt = now + 2400 + Math.random() * 3200;
 
-      if (!state.targetWindow || !state.targetWindow.classList.contains("is-open")) {
-        state.targetWindow = chooseTargetWindow();
-        state.side = Math.random() > 0.5 ? "left" : "right";
-      }
-
-      if (!state.targetWindow) {
-        setMode("walk");
-        state.x += 1.4;
-        if (state.x > bounds.width - size - 24) {
-          state.x = 24;
-        }
-        state.y = getFloorY();
-        furina.classList.toggle("is-facing-left", false);
-        render();
+      if (roll < 70) {
+        state.targetX = 24 + Math.random() * Math.max(120, bounds.width - size - 48);
+        state.vx = state.targetX >= state.x ? 1.25 : -1.25;
+        setMode("walk", 4200);
         return;
       }
 
-      const target = getWindowTarget(state.targetWindow);
-
-      if (state.mode === "sit") {
-        state.x += (target.sitX - state.x) * 0.18;
-        state.y += (target.sitY - state.y) * 0.18;
-        furina.style.zIndex = String(target.zIndex + 5);
-
-        if (now > state.sitUntil) {
-          state.targetWindow = chooseTargetWindow();
-          state.side = Math.random() > 0.5 ? "left" : "right";
-          setMode("walk");
-        }
-
-        render();
+      if (roll < 90) {
+        setMode(Math.random() > 0.48 ? "sit" : "stand", 3000 + Math.random() * 2400);
         return;
       }
 
+      if (roll < 97) {
+        setMode(Math.random() > 0.5 ? "sitFaceMouse" : "spinHead", 2200);
+        return;
+      }
+
+      if (roll < 99) {
+        state.targetX = state.x < bounds.width / 2 ? 8 : bounds.width - size - 8;
+        state.vx = state.targetX >= state.x ? 0.9 : -0.9;
+        setMode("climbWall", 900);
+        return;
+      }
+
+      state.targetX = 24 + Math.random() * Math.max(120, bounds.width - size - 48);
+      state.vx = state.targetX >= state.x ? 3.2 : -3.2;
+      setMode("run", 1500);
+    }
+
+    function tick(now) {
       const floorY = getFloorY();
+      setSprite(now);
 
-      if (state.mode !== "climb") {
-        setMode("walk");
-        const deltaX = target.sideX - state.x;
-        const stepX = Math.sign(deltaX) * Math.min(Math.abs(deltaX), 4.2);
-        state.x += stepX;
-        state.y += (floorY - state.y) * 0.12;
-        furina.classList.toggle("is-facing-left", stepX < 0);
+      if (state.dragging) {
+        render();
+        requestAnimationFrame(tick);
+        return;
+      }
 
-        if (Math.abs(deltaX) < 8) {
-          setMode("climb");
+      if (state.mode === "thrown" || state.mode === "fall") {
+        state.vy += 0.42;
+        state.x += state.vx;
+        state.y += state.vy;
+        if (state.y >= floorY) {
+          state.y = floorY;
+          state.vy = -Math.min(Math.abs(state.vy) * 0.28, 4.2);
+          setMode("bounce", 520);
+          state.nextDecisionAt = now + 900;
         }
-      } else {
-        state.x += (target.sideX - state.x) * 0.22;
-        state.y -= 5.6;
-        furina.style.zIndex = String(target.zIndex + 5);
+        furina.classList.toggle("is-facing-left", state.vx < 0);
+        render();
+        requestAnimationFrame(tick);
+        return;
+      }
 
-        if (state.y <= target.sitY) {
-          state.y = target.sitY;
-          state.x = target.sitX;
-          state.sitUntil = now + 5200;
-          setMode("sit");
+      if (state.mode === "bounce" && now > state.modeUntil) {
+        setMode("recover", 620);
+      }
+
+      if (state.mode === "recover" && now > state.modeUntil) {
+        setMode("stand", 1200);
+        state.nextDecisionAt = now + 900;
+      }
+
+      if (state.mode === "walk" || state.mode === "run") {
+        const speed = state.mode === "run" ? 3.2 : 1.25;
+        const direction = state.targetX >= state.x ? 1 : -1;
+        state.x += direction * speed;
+        furina.classList.toggle("is-facing-left", direction < 0);
+        if (Math.abs(state.targetX - state.x) < 8 || now > state.modeUntil) {
+          state.nextDecisionAt = now;
         }
+      } else if (state.mode === "sitFaceMouse") {
+        furina.classList.toggle("is-facing-left", state.mouseX < state.x + size / 2);
+      } else if (state.mode === "climbWall") {
+        state.x += state.vx;
+        state.y -= 0.7;
+        if (now > state.modeUntil || state.y < floorY - 48) {
+          state.y = Math.min(state.y + 8, floorY);
+          state.nextDecisionAt = now;
+          setMode("stand", 800);
+        }
+      }
+
+      if (!["thrown", "fall", "bounce"].includes(state.mode)) {
+        state.y += (floorY - state.y) * 0.16;
+      }
+
+      if (now >= state.nextDecisionAt && !["bounce", "recover"].includes(state.mode)) {
+        chooseNextState(now);
       }
 
       render();
+      requestAnimationFrame(tick);
     }
 
+    furina.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      const currentScale = desktopScale();
+      state.dragging = true;
+      state.dragPointerId = event.pointerId;
+      state.dragOffsetX = event.clientX / currentScale - state.x;
+      state.dragOffsetY = event.clientY / currentScale - state.y;
+      state.lastPointerX = event.clientX / currentScale;
+      state.lastPointerY = event.clientY / currentScale;
+      state.lastPointerAt = performance.now();
+      setMode("dragged", 100000);
+      furina.setPointerCapture(event.pointerId);
+    });
+
+    furina.addEventListener("pointermove", (event) => {
+      const currentScale = desktopScale();
+      state.mouseX = event.clientX / currentScale;
+      if (!state.dragging || event.pointerId !== state.dragPointerId) return;
+      const now = performance.now();
+      const x = event.clientX / currentScale;
+      const y = event.clientY / currentScale;
+      const deltaTime = Math.max(16, now - state.lastPointerAt);
+      state.vx = ((x - state.lastPointerX) / deltaTime) * 16;
+      state.vy = ((y - state.lastPointerY) / deltaTime) * 16;
+      state.x = x - state.dragOffsetX;
+      state.y = y - state.dragOffsetY;
+      state.lastPointerX = x;
+      state.lastPointerY = y;
+      state.lastPointerAt = now;
+      render();
+    });
+
+    function releaseDrag(event) {
+      if (!state.dragging || event.pointerId !== state.dragPointerId) return;
+      state.dragging = false;
+      state.dragPointerId = null;
+      furina.releasePointerCapture?.(event.pointerId);
+      setMode(Math.abs(state.vx) > 2 || Math.abs(state.vy) > 2 ? "thrown" : "fall", 1000);
+    }
+
+    furina.addEventListener("pointerup", releaseDrag);
+    furina.addEventListener("pointercancel", releaseDrag);
+    document.addEventListener("pointermove", (event) => {
+      state.mouseX = event.clientX / desktopScale();
+    });
+
     state.y = getFloorY();
+    chooseNextState(performance.now());
     render();
-    setSprite();
-    window.setInterval(setSprite, 260);
-    window.setInterval(tick, 32);
+    requestAnimationFrame(tick);
   }
 
   function updateClock() {
@@ -1706,9 +2342,66 @@
       hour: "2-digit",
       minute: "2-digit"
     }).format(now);
+
+    updateAboutGreeting(now);
+  }
+
+  function getTimeGreeting(date = new Date()) {
+    const hour = date.getHours();
+    if (hour >= 5 && hour < 12) return "Good morning";
+    if (hour >= 12 && hour < 17) return "Good afternoon";
+    if (hour >= 17 && hour < 21) return "Good evening";
+    return "Good night";
+  }
+
+  function updateAboutGreeting(date = new Date()) {
+    if (aboutTitle) {
+      aboutTitle.textContent = getTimeGreeting(date);
+    }
+  }
+
+  function setupTopBarControls() {
+    function syncLanguageButton(language) {
+      if (!languageToggle) return;
+      const current = window.portfolioLanguage?.normalizeLanguage?.(language) || language || "en";
+      languageToggle.textContent = current === "id" ? "IDN" : "ENG";
+      languageToggle.setAttribute("aria-label", `Switch language, current ${languageToggle.textContent}`);
+    }
+
+    function syncThemeButton(theme) {
+      if (!themeToggle) return;
+      const isLight = theme === "light";
+      const label = themeToggle.querySelector("span");
+      if (label) {
+        label.textContent = isLight ? "Light" : "Dark";
+      }
+      themeToggle.setAttribute("aria-label", `Switch color theme, current ${isLight ? "light" : "dark"}`);
+    }
+
+    syncLanguageButton(window.portfolioLanguage?.getCurrentLanguage?.() || "en");
+    syncThemeButton(window.portfolioTheme?.getStoredTheme?.() || document.documentElement.getAttribute("data-theme") || "blue");
+
+    languageToggle?.addEventListener("click", () => {
+      const current = window.portfolioLanguage?.getCurrentLanguage?.() || "en";
+      window.portfolioLanguage?.applyTranslations?.(current === "id" ? "en" : "id");
+    });
+
+    themeToggle?.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme") || window.portfolioTheme?.getStoredTheme?.() || "blue";
+      window.portfolioTheme?.applyTheme?.(current === "light" ? "blue" : "light");
+    });
+
+    document.addEventListener("portfolio-language-change", (event) => {
+      syncLanguageButton(event.detail?.language || "en");
+    });
+
+    document.addEventListener("portfolio-theme-change", (event) => {
+      syncThemeButton(event.detail?.theme || "blue");
+    });
   }
 
   addRecentWindow("about");
+  setupTopBarControls();
   setupGuestbook();
   setupExplorerWindow();
   setupExplorerSidebarNavigation();

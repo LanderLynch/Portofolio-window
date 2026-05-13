@@ -1,6 +1,6 @@
 (function () {
   const themeConfig = window.portfolioThemeConfig || {
-    defaultTheme: "light",
+    defaultTheme: "blue",
     storageKey: "portfolio-color-theme",
     supportedThemes: ["blue", "light", "galaxy"],
   };

@@ -720,6 +720,11 @@
   }
 
   function injectLanguageSwitcher() {
+    if (document.querySelector("[data-desktop-language-toggle], #desktop-language-toggle")) {
+      syncLanguageButtons(currentLanguage);
+      return;
+    }
+
     if (hasInjectedLanguageSwitcher || document.querySelector(".floating-language-toggle")) {
       return;
     }
