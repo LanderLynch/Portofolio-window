@@ -134,3 +134,9 @@ body.zoom-ready {
     gap: 0.55rem;
   }
 }
+
+#desktop-theme-toggle,
+.theme-toggle,
+[data-theme-value] {
+  display: none !important;
+}

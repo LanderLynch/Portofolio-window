@@ -4,7 +4,6 @@
   const triggers = Array.from(document.querySelectorAll("[data-window-target]"));
   const clock = document.getElementById("desktop-clock");
   const languageToggle = document.getElementById("desktop-language-toggle");
-  const themeToggle = document.getElementById("desktop-theme-toggle");
   const aboutTitle = document.getElementById("about-title");
   const taskbarRecents = document.getElementById("taskbar-recents");
   const windowLabels = {
@@ -2368,35 +2367,15 @@
       languageToggle.setAttribute("aria-label", `Switch language, current ${languageToggle.textContent}`);
     }
 
-    function syncThemeButton(theme) {
-      if (!themeToggle) return;
-      const isLight = theme === "light";
-      const label = themeToggle.querySelector("span");
-      if (label) {
-        label.textContent = isLight ? "Light" : "Dark";
-      }
-      themeToggle.setAttribute("aria-label", `Switch color theme, current ${isLight ? "light" : "dark"}`);
-    }
-
     syncLanguageButton(window.portfolioLanguage?.getCurrentLanguage?.() || "en");
-    syncThemeButton(window.portfolioTheme?.getStoredTheme?.() || document.documentElement.getAttribute("data-theme") || "blue");
 
     languageToggle?.addEventListener("click", () => {
       const current = window.portfolioLanguage?.getCurrentLanguage?.() || "en";
       window.portfolioLanguage?.applyTranslations?.(current === "id" ? "en" : "id");
     });
 
-    themeToggle?.addEventListener("click", () => {
-      const current = document.documentElement.getAttribute("data-theme") || window.portfolioTheme?.getStoredTheme?.() || "blue";
-      window.portfolioTheme?.applyTheme?.(current === "light" ? "blue" : "light");
-    });
-
     document.addEventListener("portfolio-language-change", (event) => {
       syncLanguageButton(event.detail?.language || "en");
-    });
-
-    document.addEventListener("portfolio-theme-change", (event) => {
-      syncThemeButton(event.detail?.theme || "blue");
     });
   }
 

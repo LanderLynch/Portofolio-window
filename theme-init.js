@@ -1,36 +1,29 @@
 (function () {
-  const themeConfig = window.portfolioThemeConfig || {
-    defaultTheme: "blue",
-    storageKey: "portfolio-color-theme",
-    supportedThemes: ["blue", "light", "galaxy"],
-  };
-  const supportedThemes = Array.isArray(themeConfig.supportedThemes)
-    ? [...themeConfig.supportedThemes]
-    : ["blue", "light", "galaxy"];
-  const defaultTheme =
-    typeof themeConfig.defaultTheme === "string"
-      ? themeConfig.defaultTheme
-      : "light";
-  const storageKey = themeConfig.storageKey || "portfolio-color-theme";
-  const supportedThemeSet = new Set(supportedThemes);
+  const storageKey = "portfolio-color-theme";
 
-  function normalizeTheme(theme) {
-    return supportedThemeSet.has(theme) ? theme : defaultTheme;
+  function isDesktopHomepage() {
+    const pathname = window.location.pathname;
+    const path = pathname.replace(/\/+$/, "");
+    const pageName = path.split("/").pop();
+
+    return pathname === "/" || pathname.endsWith("/") || pageName === "index.html" || pageName === "index";
   }
 
-  let storedTheme = defaultTheme;
-
-  try {
-    storedTheme = normalizeTheme(window.localStorage.getItem(storageKey));
-  } catch (error) {
-    storedTheme = defaultTheme;
-  }
+  const pageTheme = isDesktopHomepage() ? "blue" : "light";
 
   window.portfolioThemeConfig = {
-    defaultTheme,
+    defaultTheme: pageTheme,
     storageKey,
-    supportedThemes: [...supportedThemes],
+    supportedThemes: ["blue", "light"],
+    isThemeLocked: true,
+    mode: "page-based",
   };
 
-  document.documentElement.setAttribute("data-theme", storedTheme);
+  try {
+    window.localStorage.setItem(storageKey, pageTheme);
+  } catch (error) {
+    // Ignore storage access errors. The DOM theme attribute is still applied.
+  }
+
+  document.documentElement.setAttribute("data-theme", pageTheme);
 })();

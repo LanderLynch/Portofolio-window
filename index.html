@@ -10,7 +10,9 @@
     window.portfolioThemeConfig = {
       defaultTheme: "blue",
       storageKey: "portfolio-color-theme",
-      supportedThemes: ["blue", "light", "galaxy"]
+      supportedThemes: ["blue", "light"],
+      isThemeLocked: true,
+      mode: "page-based"
     };
   </script>
   <script src="theme-init.js"></script>
@@ -44,11 +46,6 @@
         <span>Jona OS</span>
         <time id="desktop-clock" datetime="">--:--</time>
         <button class="topbar-toggle" id="desktop-language-toggle" type="button" aria-label="Switch language">ENG</button>
-        <button class="topbar-toggle theme-toggle" id="desktop-theme-toggle" type="button" aria-label="Switch color theme">
-          <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.8 8.8 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
-          <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2.5"></path><path d="M12 19v2.5"></path><path d="M4.93 4.93l1.77 1.77"></path><path d="M17.3 17.3l1.77 1.77"></path><path d="M2.5 12H5"></path><path d="M19 12h2.5"></path><path d="M4.93 19.07l1.77-1.77"></path><path d="M17.3 6.7l1.77-1.77"></path></svg>
-          <span>Dark</span>
-        </button>
       </div>
     </header>
 

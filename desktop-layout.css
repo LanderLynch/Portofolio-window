@@ -13,7 +13,7 @@
   --os-shadow: 0 30px 90px rgba(19, 35, 57, 0.34);
   --os-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --desktop-zoom: 0.6;
-  --top-bar-height: 40px;
+  --top-bar-height: 42px;
   --taskbar-height: 76px;
   --cursor-default: url("project/assets/cursor/Cursor mouse small.png") 3 2, auto;
   --cursor-pointer: url("project/assets/cursor/Cursor mouse small.png") 3 2, pointer;
@@ -70,7 +70,7 @@ a,
 
 .wallpaper {
   position: absolute;
-  inset: 34px 0 0;
+  inset: var(--top-bar-height) 0 0;
   background:
     radial-gradient(circle at 48% 100%, rgba(210, 134, 92, 0.58), transparent 34%),
     radial-gradient(circle at 82% 12%, rgba(167, 196, 224, 0.24), transparent 30%),
@@ -202,17 +202,18 @@ a,
 .menu-bar {
   position: absolute;
   inset: 0 0 auto;
-  height: 38px;
+  min-height: var(--top-bar-height);
   z-index: 60;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 0 10px;
+  padding: 4px 10px;
   color: #f7fbff;
   background: rgba(22, 25, 38, 0.72);
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 1px 24px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(22px) saturate(130%);
+  overflow: visible;
 }
 
 .start-mark,
@@ -230,6 +231,7 @@ a,
   height: 30px;
   padding: 6px;
   border-radius: 8px;
+  transform: translateY(1px);
 }
 
 .start-mark span {
@@ -244,6 +246,7 @@ a,
   display: flex;
   align-items: center;
   gap: 6px;
+  transform: translateY(1px);
 }
 
 .menu-links button,
@@ -256,7 +259,7 @@ a,
   padding: 7px 12px;
   font-size: 15px;
   font-weight: 650;
-  line-height: 1;
+  line-height: 1.25;
 }
 
 .menu-links button:hover,
@@ -272,6 +275,8 @@ a,
   align-items: center;
   color: rgba(255, 255, 255, 0.82);
   font-size: 13px;
+  line-height: 1.25;
+  transform: translateY(1px);
 }
 
 .topbar-toggle {
@@ -326,7 +331,7 @@ a,
   position: relative;
   width: calc(100vw / var(--desktop-zoom));
   height: calc(100vh / var(--desktop-zoom));
-  padding-top: 38px;
+  padding-top: var(--top-bar-height);
 }
 
 .desktop-window {
@@ -3794,4 +3799,10 @@ h2 {
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
   }
+}
+
+#desktop-theme-toggle,
+.theme-toggle,
+[data-theme-value] {
+  display: none !important;
 }

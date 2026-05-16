@@ -1,135 +1,91 @@
 (function () {
-  const themeConfig = window.portfolioThemeConfig || {
-    defaultTheme: "blue",
-    storageKey: "portfolio-color-theme",
-    supportedThemes: ["blue", "light", "galaxy"],
-  };
-  const storageKey = themeConfig.storageKey;
-  const supportedThemes = Array.isArray(themeConfig.supportedThemes)
-    ? [...themeConfig.supportedThemes]
-    : ["blue", "light", "galaxy"];
-  const supportedThemeSet = new Set(supportedThemes);
-  const defaultTheme =
-    typeof themeConfig.defaultTheme === "string"
-      ? themeConfig.defaultTheme
-      : "light";
-  let hasBoundThemeEvents = false;
-  let hasInitializedThemeControls = false;
+  const storageKey = "portfolio-color-theme";
+  const supportedThemes = ["blue", "light"];
 
-  window.portfolioThemeConfig = {
-    defaultTheme,
-    storageKey,
-    supportedThemes: [...supportedThemes],
-  };
+  function isDesktopHomepage() {
+    const pathname = window.location.pathname;
+    const path = pathname.replace(/\/+$/, "");
+    const pageName = path.split("/").pop();
 
-  function normalizeTheme(theme) {
-    return supportedThemeSet.has(theme) ? theme : defaultTheme;
+    return pathname === "/" || pathname.endsWith("/") || pageName === "index.html" || pageName === "index";
   }
 
-  function getStoredTheme() {
-    try {
-      return normalizeTheme(window.localStorage.getItem(storageKey));
-    } catch (error) {
-      return defaultTheme;
-    }
+  function getPageTheme() {
+    return isDesktopHomepage() ? "blue" : "light";
   }
 
-  function persistTheme(theme) {
-    try {
-      window.localStorage.setItem(storageKey, theme);
-    } catch (error) {
-      // Ignore storage access errors and keep the in-memory theme applied.
-    }
-  }
+  function applyPageTheme() {
+    const pageTheme = getPageTheme();
 
-  function syncThemeAttributes(theme) {
-    const nextTheme = normalizeTheme(theme);
-    document.documentElement.setAttribute("data-theme", nextTheme);
+    document.documentElement.setAttribute("data-theme", pageTheme);
 
     if (document.body) {
-      document.body.setAttribute("data-theme", nextTheme);
+      document.body.setAttribute("data-theme", pageTheme);
     }
 
-    return nextTheme;
-  }
+    try {
+      window.localStorage.setItem(storageKey, pageTheme);
+    } catch (error) {
+      // Ignore storage access errors.
+    }
 
-  function syncThemeButtons(theme, root) {
-    const nextTheme = normalizeTheme(theme);
-    const scope = root || document;
-
-    scope.querySelectorAll("[data-theme-value]").forEach((button) => {
-      const isActive = button.dataset.themeValue === nextTheme;
+    document.querySelectorAll("[data-theme-value]").forEach((button) => {
+      const isActive = button.dataset.themeValue === pageTheme;
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-pressed", String(isActive));
+      button.hidden = true;
+      button.setAttribute("aria-hidden", "true");
+      button.setAttribute("tabindex", "-1");
     });
-  }
 
-  function applyTheme(theme, options) {
-    const persistSelection = options?.persist !== false;
-    const nextTheme = syncThemeAttributes(theme);
-
-    syncThemeButtons(nextTheme);
-
-    if (persistSelection) {
-      persistTheme(nextTheme);
-    }
+    document.querySelectorAll(".theme-toggle, #desktop-theme-toggle").forEach((button) => {
+      button.hidden = true;
+      button.setAttribute("aria-hidden", "true");
+      button.setAttribute("tabindex", "-1");
+    });
 
     document.dispatchEvent(
       new CustomEvent("portfolio-theme-change", {
-        detail: { theme: nextTheme },
+        detail: { theme: pageTheme, locked: true, mode: "page-based" },
       }),
     );
 
-    return nextTheme;
+    return pageTheme;
   }
 
-  function handleThemeSelection(event) {
-    const themeButton = event.target.closest("[data-theme-value]");
-
-    if (!themeButton) {
-      return;
-    }
-
-    applyTheme(themeButton.dataset.themeValue);
+  function normalizeTheme() {
+    return getPageTheme();
   }
 
-  function bindThemeControls() {
-    if (hasBoundThemeEvents) {
-      return;
-    }
-
-    document.addEventListener("click", handleThemeSelection);
-    hasBoundThemeEvents = true;
-  }
-
-  function handleStorageSync(event) {
-    if (event.key === storageKey) {
-      applyTheme(event.newValue, { persist: false });
-    }
+  function getStoredTheme() {
+    return getPageTheme();
   }
 
   function initThemeControls() {
-    const activeTheme = applyTheme(getStoredTheme(), { persist: false });
-
-    bindThemeControls();
-
-    if (!hasInitializedThemeControls) {
-      window.addEventListener("storage", handleStorageSync);
-      hasInitializedThemeControls = true;
-    }
-
-    return activeTheme;
+    return applyPageTheme();
   }
 
+  window.portfolioThemeConfig = {
+    defaultTheme: getPageTheme(),
+    storageKey,
+    supportedThemes: [...supportedThemes],
+    isThemeLocked: true,
+    mode: "page-based",
+  };
+
   window.portfolioTheme = {
-    applyTheme,
+    applyTheme: applyPageTheme,
     getStoredTheme,
     initThemeControls,
     normalizeTheme,
     storageKey,
     supportedThemes: [...supportedThemes],
-    syncThemeButtons,
+    syncThemeButtons: applyPageTheme,
   };
 
-  initThemeControls();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeControls, { once: true });
+  } else {
+    initThemeControls();
+  }
 })();
